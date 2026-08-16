@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NEWSMASTER - Hindi News</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f4f4;
+  color:#222;
+}
+
+header{
+  background:white;
+  box-shadow:0 2px 8px #0002;
+}
+
+.top{
+  max-width:1200px;
+  margin:auto;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:28px;
+  font-weight:bold;
+  color:#e21b23;
+}
+
+.logo span{
+  color:#111;
+}
+
+.search{
+  padding:9px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+
+nav{
+  background:#111;
+  overflow:auto;
+}
+
+nav ul{
+  display:flex;
+  list-style:none;
+  max-width:1200px;
+  margin:auto;
+}
+
+nav li{
+  color:white;
+  padding:14px 18px;
+  white-space:nowrap;
+}
+
+nav li:hover{
+  background:#e21b23;
+}
+
+.breaking{
+  background:#e21b23;
+  color:white;
+  padding:12px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.container{
+  max-width:1200px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+.hero{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+}
+
+.main{
+  background:linear-gradient(135deg,#111,#555);
+  color:white;
+  min-height:350px;
+  padding:30px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+}
+
+.main h1{
+  font-size:35px;
+  margin:12px 0;
+}
+
+.cards{
+  display:grid;
+  gap:15px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 2px 8px #0001;
+}
+
+.card h3{
+  margin-top:8px;
+  line-height:1.5;
+}
+
+.category{
+  color:#e21b23;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.title{
+  margin:35px 0 15px;
+  border-left:5px solid #e21b23;
+  padding-left:10px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+footer{
+  margin-top:50px;
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:40px 20px;
+}
+
+@media(max-width:700px){
+  .hero{
+    grid-template-columns:1fr;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .main h1{
+    font-size:26px;
+  }
+
+  .logo{
+    font-size:22px;
+  }
+
+  .search{
+    width:100px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="top">
+  <div class="logo">NEWS<span>MASTER</span></div>
+
+  <input class="search"
+  type="text"
+  placeholder="खबर खोजें...">
+</div>
+
+<nav>
+<ul>
+<li>होम</li>
+<li>ब्रेकिंग न्यूज़</li>
+<li>भारत</li>
+<li>दुनिया</li>
+<li>राजनीति</li>
+<li>बिजनेस</li>
+<li>स्पोर्ट्स</li>
+<li>टेक्नोलॉजी</li>
+<li>मनोरंजन</li>
+<li>वीडियो</li>
+</ul>
+</nav>
+
+</header>
+
+<div class="breaking">
+🔴 BREAKING NEWS — देश और दुनिया की बड़ी खबरें सबसे पहले
+</div>
+
+<main class="container">
+
+<section class="hero">
+
+<div class="main">
+<span>TOP NEWS</span>
+
+<h1>
+देश-दुनिया की बड़ी खबरों पर NEWSMASTER की खास नजर
+</h1>
+
+<p>
+Latest Hindi News और महत्वपूर्ण समाचार यहाँ पढ़ें।
+</p>
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="category">भारत</div>
+<h3>भारत की आज की बड़ी खबरें और ताजा अपडेट</h3>
+</div>
+
+<div class="card">
+<div class="category">TECHNOLOGY</div>
+<h3>AI और Technology की दुनिया की नई खबरें</h3>
+</div>
+
+<div class="card">
+<div class="category">SPORTS</div>
+<h3>Sports जगत की बड़ी खबरें</h3>
+</div>
+
+</div>
+
+</section>
+
+<h2 class="title">Latest News</h2>
+
+<section class="grid">
+
+<div class="card">
+<div class="category">INDIA</div>
+<h3>देश की बड़ी खबरों का पूरा अपडेट</h3>
+<p>आज की महत्वपूर्ण खबरें पढ़ें।</p>
+</div>
+
+<div class="card">
+<div class="category">WORLD</div>
+<h3>दुनिया भर से आई महत्वपूर्ण खबरें</h3>
+<p>International latest updates.</p>
+</div>
+
+<div class="card">
+<div class="category">BUSINESS</div>
+<h3>Business और Economy की ताजा खबरें</h3>
+<p>Market और economy updates.</p>
+</div>
+
+<div class="card">
+<div class="category">TECHNOLOGY</div>
+<h3>AI और नई Technology की खबरें</h3>
+</div>
+
+<div class="card">
+<div class="category">SPORTS</div>
+<h3>Sports की सभी बड़ी खबरें</h3>
+</div>
+
+<div class="card">
+<div class="category">ENTERTAINMENT</div>
+<h3>Entertainment जगत की ताजा खबरें</h3>
+</div>
+
+</section>
+
+</main>
+
+<footer>
+<h2>NEWSMASTER</h2>
+<p>आपकी खबर, आपकी आवाज़।</p>
+<br>
+<p>© 2026 NEWSMASTER</p>
+</footer>
+
+</body>
+</html>
