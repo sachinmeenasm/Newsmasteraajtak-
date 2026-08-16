@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NEWSMASTER | News</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,"Noto Sans Devanagari",sans-serif;
+  background:#f4f4f4;
+  color:#222;
+}
+
+header{
+  background:#fff;
+  padding:18px 25px;
+  border-bottom:1px solid #ddd;
+}
+
+.logo{
+  font-size:30px;
+  font-weight:900;
+}
+
+.logo span{
+  color:#e31824;
+}
+
+nav{
+  background:#111;
+  color:white;
+  padding:14px;
+  text-align:center;
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin:0 12px;
+  font-size:18px;
+}
+
+.container{
+  max-width:900px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+.category{
+  color:#e31824;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+h1{
+  font-size:38px;
+  line-height:1.3;
+  margin-bottom:15px;
+}
+
+.date{
+  color:#777;
+  margin-bottom:25px;
+}
+
+.news-image{
+  width:100%;
+  height:350px;
+  background:linear-gradient(135deg,#222,#555);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:30px;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
+.article-text{
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  font-size:19px;
+  line-height:1.8;
+}
+
+.back{
+  display:inline-block;
+  margin-top:25px;
+  padding:12px 20px;
+  background:#e31824;
+  color:white;
+  text-decoration:none;
+  border-radius:6px;
+}
+
+footer{
+  margin-top:40px;
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:25px;
+}
+
+@media(max-width:600px){
+  h1{
+    font-size:28px;
+  }
+
+  .news-image{
+    height:220px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <span>NEWS</span>MASTER
+  </div>
+</header>
+
+<nav>
+  <a href="index.html">होम</a>
+  <a href="index.html">भारत</a>
+  <a href="index.html">दुनिया</a>
+  <a href="index.html">राजनीति</a>
+</nav>
+
+<main class="container">
+
+  <div class="category">भारत</div>
+
+  <h1>
+    भारत की आज की बड़ी खबरें और ताजा अपडेट
+  </h1>
+
+  <div class="date">
+    NEWSMASTER • आज की खबर
+  </div>
+
+  <div class="news-image">
+    NEWSMASTER
+  </div>
+
+  <div class="article-text">
+    <p>
+      देश और दुनिया की महत्वपूर्ण खबरों का ताजा अपडेट
+      NEWSMASTER पर पढ़ें।
+    </p>
+
+    <br>
+
+    <p>
+      यहां आपको भारत, दुनिया, राजनीति, टेक्नोलॉजी,
+      बिजनेस और मनोरंजन से जुड़ी खबरें मिलेंगी।
+    </p>
+
+    <br>
+
+    <p>
+      हमारी वेबसाइट का उद्देश्य समाचारों को आसान और
+      साफ तरीके से पाठकों तक पहुंचाना है।
+    </p>
+  </div>
+
+  <a class="back" href="index.html">
+    ← वापस होम पेज
+  </a>
+
+</main>
+
+<footer>
+  © 2026 NEWSMASTER. All Rights Reserved.
+</footer>
+
+</body>
+</html>
