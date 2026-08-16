@@ -244,59 +244,59 @@ a{text-decoration:none;color:inherit}
 
 <section class="grid">
 
-<article class="card">
+<a href="article.html" class="card">
   <div class="pic">INDIA</div>
   <div class="card-content">
     <div class="tag">भारत</div>
     <h3>भारत की आज की बड़ी खबरें और ताजा अपडेट</h3>
     <p>देशभर से महत्वपूर्ण समाचार यहां पढ़ें।</p>
   </div>
-</article>
-
-<article class="card">
+</a>
+  
+<a href="article.html" class="card">
   <div class="pic">WORLD</div>
   <div class="card-content">
     <div class="tag">दुनिया</div>
     <h3>दुनिया भर की बड़ी खबरों पर खास नजर</h3>
     <p>International news और महत्वपूर्ण अपडेट।</p>
   </div>
-</article>
+</a>
 
-<article class="card">
+<a href="article.html" class="card">
   <div class="pic">TECH</div>
   <div class="card-content">
     <div class="tag">टेक्नोलॉजी</div>
     <h3>टेक्नोलॉजी की नई खबरें और अपडेट</h3>
     <p>Technology की दुनिया की ताजा जानकारी।</p>
   </div>
-</article>
+</a>
 
-<article class="card">
+<a href="article.html" class="card">
   <div class="pic">SPORTS</div>
   <div class="card-content">
     <div class="tag">स्पोर्ट्स</div>
     <h3>खेल जगत की बड़ी खबरें</h3>
     <p>क्रिकेट और अन्य खेलों की ताजा खबरें।</p>
   </div>
-</article>
+</a>
 
-<article class="card">
+<a href="article.html" class="card">
   <div class="pic">BUSINESS</div>
   <div class="card-content">
     <div class="tag">बिजनेस</div>
     <h3>बिजनेस और अर्थव्यवस्था की खबरें</h3>
     <p>Market और economy की महत्वपूर्ण अपडेट।</p>
   </div>
-</article>
+</a>
 
-<article class="card">
+<a href="article.html" class="card">
   <div class="pic">ENTERTAINMENT</div>
   <div class="card-content">
     <div class="tag">मनोरंजन</div>
     <h3>मनोरंजन जगत की ताजा खबरें</h3>
     <p>फिल्म, टीवी और मनोरंजन की खबरें।</p>
   </div>
-</article>
+</a>
 
 </section>
 
@@ -400,6 +400,15 @@ setInterval(() => {
   breaking.style.opacity =
     breaking.style.opacity === "0.6" ? "1" : "0.6";
 }, 700);
+
+  // Make news cards clickable
+document.querySelectorAll(".card").forEach(function(card) {
+    card.style.cursor = "pointer";
+
+    card.addEventListener("click", function() {
+        window.location.href = "article.html";
+    });
+});
   
 </script>
 
