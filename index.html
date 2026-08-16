@@ -3,86 +3,153 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>NEWSMASTER - Hindi News</title>
+<meta name="description" content="NEWSMASTER - Hindi News Portal">
+<title>NEWSMASTER | Hindi News</title>
 
 <style>
 *{
-  box-sizing:border-box;
   margin:0;
   padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --red:#e31824;
+  --dark:#111;
+  --light:#f5f6f8;
+  --white:#fff;
+  --text:#181818;
+  --muted:#707070;
 }
 
 body{
-  font-family:Arial,sans-serif;
-  background:#f4f4f4;
-  color:#222;
+  font-family:Arial,"Noto Sans Devanagari",sans-serif;
+  background:var(--light);
+  color:var(--text);
 }
 
-header{
-  background:white;
-  box-shadow:0 2px 8px #0002;
+a{
+  text-decoration:none;
+  color:inherit;
 }
 
-.top{
+.header{
+  background:#fff;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 2px 12px #00000018;
+}
+
+.header-top{
   max-width:1200px;
   margin:auto;
-  padding:15px;
+  min-height:75px;
+  padding:12px 18px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+  gap:15px;
 }
 
 .logo{
-  font-size:28px;
-  font-weight:bold;
-  color:#e21b23;
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:-1px;
 }
 
-.logo span{
+.logo-red{
+  color:var(--red);
+}
+
+.logo-black{
   color:#111;
 }
 
-.search{
-  padding:9px;
-  border:1px solid #ccc;
-  border-radius:6px;
-}
-
-nav{
-  background:#111;
-  overflow:auto;
-}
-
-nav ul{
+.search-box{
   display:flex;
-  list-style:none;
+  align-items:center;
+  border:1px solid #ddd;
+  border-radius:30px;
+  overflow:hidden;
+  background:#fff;
+}
+
+.search-box input{
+  width:210px;
+  border:0;
+  outline:0;
+  padding:11px 15px;
+  font-size:15px;
+}
+
+.search-btn{
+  border:0;
+  background:var(--red);
+  color:#fff;
+  padding:11px 16px;
+  cursor:pointer;
+}
+
+.nav{
+  background:#111;
+  overflow-x:auto;
+}
+
+.nav ul{
   max-width:1200px;
   margin:auto;
+  display:flex;
+  list-style:none;
 }
 
-nav li{
-  color:white;
-  padding:14px 18px;
+.nav li{
+  color:#fff;
+  padding:14px 17px;
   white-space:nowrap;
+  cursor:pointer;
+  font-weight:bold;
 }
 
-nav li:hover{
-  background:#e21b23;
+.nav li:hover,
+.nav .active{
+  background:var(--red);
 }
 
 .breaking{
-  background:#e21b23;
-  color:white;
-  padding:12px;
-  text-align:center;
+  background:var(--red);
+  color:#fff;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.breaking-inner{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+}
+
+.breaking-title{
+  background:#b90009;
+  padding:12px 16px;
   font-weight:bold;
+}
+
+.breaking-text{
+  padding:12px 20px;
+  animation:move 18s linear infinite;
+}
+
+@keyframes move{
+  from{transform:translateX(100%);}
+  to{transform:translateX(-100%);}
 }
 
 .container{
   max-width:1200px;
   margin:25px auto;
-  padding:0 15px;
+  padding:0 18px;
 }
 
 .hero{
@@ -91,84 +158,304 @@ nav li:hover{
   gap:20px;
 }
 
-.main{
-  background:linear-gradient(135deg,#111,#555);
-  color:white;
-  min-height:350px;
-  padding:30px;
-  border-radius:12px;
+.featured{
+  min-height:410px;
+  border-radius:16px;
+  overflow:hidden;
+  position:relative;
+  background:
+    linear-gradient(0deg,#000c,#00000010),
+    linear-gradient(135deg,#222,#777);
+  color:#fff;
   display:flex;
-  flex-direction:column;
-  justify-content:end;
+  align-items:flex-end;
 }
 
-.main h1{
-  font-size:35px;
-  margin:12px 0;
+.featured-content{
+  padding:30px;
 }
 
-.cards{
+.badge{
+  display:inline-block;
+  background:var(--red);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:4px;
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.featured h1{
+  font-size:36px;
+  line-height:1.25;
+  margin-bottom:12px;
+}
+
+.featured p{
+  font-size:16px;
+  color:#eee;
+}
+
+.side-list{
   display:grid;
   gap:15px;
 }
 
-.card{
-  background:white;
+.news-card{
+  background:#fff;
+  border-radius:12px;
   padding:20px;
-  border-radius:10px;
-  box-shadow:0 2px 8px #0001;
+  box-shadow:0 2px 12px #0000000d;
+  transition:.2s;
 }
 
-.card h3{
-  margin-top:8px;
-  line-height:1.5;
+.news-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 7px 20px #00000018;
 }
 
 .category{
-  color:#e21b23;
-  font-size:13px;
+  color:var(--red);
+  font-size:12px;
   font-weight:bold;
+  text-transform:uppercase;
 }
 
-.title{
-  margin:35px 0 15px;
-  border-left:5px solid #e21b23;
+.news-card h3{
+  font-size:20px;
+  line-height:1.4;
+  margin:8px 0;
+}
+
+.time{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:32px 0 15px;
+}
+
+.section-head h2{
+  font-size:25px;
+  border-left:5px solid var(--red);
   padding-left:10px;
 }
 
-.grid{
+.view-all{
+  color:var(--red);
+  font-weight:bold;
+}
+
+.news-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:18px;
 }
 
-footer{
-  margin-top:50px;
-  background:#111;
-  color:white;
-  text-align:center;
-  padding:40px 20px;
+.news-image{
+  height:150px;
+  border-radius:9px;
+  margin-bottom:15px;
+  background:linear-gradient(135deg,#ddd,#777);
 }
 
-@media(max-width:700px){
-  .hero{
-    grid-template-columns:1fr;
-  }
+.two-column{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:20px;
+}
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+.latest-list{
+  display:grid;
+  gap:12px;
+}
 
-  .main h1{
-    font-size:26px;
+.latest-item{
+  background:#fff;
+  padding:17px;
+  border-radius:10px;
+  display:flex;
+  gap:15px;
+  box-shadow:0 2px 8px #0000000b;
+}
+
+.number{
+  min-width:35px;
+  height:35px;
+  border-radius:50%;
+  background:var(--red);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.video-box{
+  min-height:250px;
+  border-radius:14px;
+  background:#171717;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+}
+
+.play{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:var(--red);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.ad{
+  margin:30px 0;
+  min-height:90px;
+  border:1px dashed #bbb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#999;
+  background:#fff;
+}
+
+.footer{
+  background:#111;
+  color:#fff;
+  margin-top:50px;
+  padding:45px 20px 25px;
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:30px;
+}
+
+.footer h2{
+  color:var(--red);
+  margin-bottom:12px;
+}
+
+.footer h3{
+  margin-bottom:12px;
+}
+
+.footer p{
+  color:#bbb;
+  line-height:1.7;
+}
+
+.footer-bottom{
+  max-width:1200px;
+  margin:30px auto 0;
+  padding-top:20px;
+  border-top:1px solid #333;
+  color:#999;
+  text-align:center;
+}
+
+@media(max-width:800px){
+
+  .header-top{
+    min-height:65px;
   }
 
   .logo{
-    font-size:22px;
+    font-size:24px;
   }
 
-  .search{
-    width:100px;
+  .search-box input{
+    width:110px;
+  }
+
+  .hero,
+  .two-column{
+    grid-template-columns:1fr;
+  }
+
+  .featured{
+    min-height:360px;
+  }
+
+  .featured h1{
+    font-size:28px;
+  }
+
+  .news-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .footer-inner{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:520px){
+
+  .header-top{
+    padding:10px 12px;
+  }
+
+  .logo{
+    font-size:21px;
+  }
+
+  .search-box input{
+    width:85px;
+    padding:9px;
+  }
+
+  .search-btn{
+    padding:9px 11px;
+  }
+
+  .nav li{
+    padding:13px 15px;
+  }
+
+  .breaking-title{
+    padding:11px;
+  }
+
+  .breaking-text{
+    padding:11px;
+  }
+
+  .container{
+    margin:18px auto;
+    padding:0 12px;
+  }
+
+  .featured-content{
+    padding:22px;
+  }
+
+  .featured h1{
+    font-size:25px;
+  }
+
+  .news-grid{
+    grid-template-columns:1fr;
+  }
+
+  .news-card h3{
+    font-size:18px;
+  }
+
+  .section-head h2{
+    font-size:21px;
   }
 }
 </style>
@@ -176,121 +463,214 @@ footer{
 
 <body>
 
-<header>
+<header class="header">
 
-<div class="top">
-  <div class="logo">NEWS<span>MASTER</span></div>
+  <div class="header-top">
 
-  <input class="search"
-  type="text"
-  placeholder="खबर खोजें...">
-</div>
+    <a href="#" class="logo">
+      <span class="logo-red">NEWS</span><span class="logo-black">MASTER</span>
+    </a>
 
-<nav>
-<ul>
-<li>होम</li>
-<li>ब्रेकिंग न्यूज़</li>
-<li>भारत</li>
-<li>दुनिया</li>
-<li>राजनीति</li>
-<li>बिजनेस</li>
-<li>स्पोर्ट्स</li>
-<li>टेक्नोलॉजी</li>
-<li>मनोरंजन</li>
-<li>वीडियो</li>
-</ul>
-</nav>
+    <div class="search-box">
+      <input id="searchInput" type="search" placeholder="खबर खोजें...">
+      <button class="search-btn" onclick="searchNews()">🔍</button>
+    </div>
+
+  </div>
+
+  <nav class="nav">
+    <ul>
+      <li class="active">होम</li>
+      <li>ब्रेकिंग न्यूज़</li>
+      <li>भारत</li>
+      <li>दुनिया</li>
+      <li>राजनीति</li>
+      <li>बिजनेस</li>
+      <li>स्पोर्ट्स</li>
+      <li>टेक्नोलॉजी</li>
+      <li>मनोरंजन</li>
+      <li>वीडियो</li>
+    </ul>
+  </nav>
 
 </header>
 
-<div class="breaking">
-🔴 BREAKING NEWS — देश और दुनिया की बड़ी खबरें सबसे पहले
-</div>
+<section class="breaking">
+  <div class="breaking-inner">
+    <div class="breaking-title">🔴 BREAKING</div>
+    <div class="breaking-text">
+      देश और दुनिया की बड़ी खबरें सबसे पहले NEWSMASTER पर पढ़ें...
+    </div>
+  </div>
+</section>
 
 <main class="container">
 
-<section class="hero">
+  <section class="hero">
 
-<div class="main">
-<span>TOP NEWS</span>
+    <article class="featured">
+      <div class="featured-content">
+        <span class="badge">TOP STORY</span>
 
-<h1>
-देश-दुनिया की बड़ी खबरों पर NEWSMASTER की खास नजर
-</h1>
+        <h1>
+          देश-दुनिया की बड़ी खबरों पर NEWSMASTER की खास नजर
+        </h1>
 
-<p>
-Latest Hindi News और महत्वपूर्ण समाचार यहाँ पढ़ें।
-</p>
-</div>
+        <p>
+          ताजा खबरें, महत्वपूर्ण अपडेट और देश-दुनिया की हर बड़ी जानकारी।
+        </p>
+      </div>
+    </article>
 
-<div class="cards">
+    <div class="side-list">
 
-<div class="card">
-<div class="category">भारत</div>
-<h3>भारत की आज की बड़ी खबरें और ताजा अपडेट</h3>
-</div>
+      <article class="news-card">
+        <div class="category">भारत</div>
+        <h3>भारत की आज की बड़ी खबरें और ताजा अपडेट</h3>
+        <div class="time">आज • Latest Update</div>
+      </article>
 
-<div class="card">
-<div class="category">TECHNOLOGY</div>
-<h3>AI और Technology की दुनिया की नई खबरें</h3>
-</div>
+      <article class="news-card">
+        <div class="category">Technology</div>
+        <h3>AI और Technology की दुनिया में नए बदलाव</h3>
+        <div class="time">आज • Technology</div>
+      </article>
 
-<div class="card">
-<div class="category">SPORTS</div>
-<h3>Sports जगत की बड़ी खबरें</h3>
-</div>
+      <article class="news-card">
+        <div class="category">Sports</div>
+        <h3>Sports जगत की बड़ी खबरें और ताजा अपडेट</h3>
+        <div class="time">आज • Sports</div>
+      </article>
 
-</div>
+    </div>
 
-</section>
+  </section>
 
-<h2 class="title">Latest News</h2>
+  <div class="ad">
+    Advertisement Space
+  </div>
 
-<section class="grid">
+  <div class="section-head">
+    <h2>Latest News</h2>
+    <a href="#" class="view-all">सभी खबरें →</a>
+  </div>
 
-<div class="card">
-<div class="category">INDIA</div>
-<h3>देश की बड़ी खबरों का पूरा अपडेट</h3>
-<p>आज की महत्वपूर्ण खबरें पढ़ें।</p>
-</div>
+  <section class="news-grid">
 
-<div class="card">
-<div class="category">WORLD</div>
-<h3>दुनिया भर से आई महत्वपूर्ण खबरें</h3>
-<p>International latest updates.</p>
-</div>
+    <article class="news-card">
+      <div class="news-image"></div>
+      <div class="category">India</div>
+      <h3>देश की बड़ी खबरों का पूरा अपडेट यहां पढ़ें</h3>
+      <div class="time">10 मिनट पहले</div>
+    </article>
 
-<div class="card">
-<div class="category">BUSINESS</div>
-<h3>Business और Economy की ताजा खबरें</h3>
-<p>Market और economy updates.</p>
-</div>
+    <article class="news-card">
+      <div class="news-image"></div>
+      <div class="category">World</div>
+      <h3>दुनिया भर से आई महत्वपूर्ण खबरें</h3>
+      <div class="time">20 मिनट पहले</div>
+    </article>
 
-<div class="card">
-<div class="category">TECHNOLOGY</div>
-<h3>AI और नई Technology की खबरें</h3>
-</div>
+    <article class="news-card">
+      <div class="news-image"></div>
+      <div class="category">Business</div>
+      <h3>Business और Economy की ताजा खबरें</h3>
+      <div class="time">30 मिनट पहले</div>
+    </article>
 
-<div class="card">
-<div class="category">SPORTS</div>
-<h3>Sports की सभी बड़ी खबरें</h3>
-</div>
+  </section>
 
-<div class="card">
-<div class="category">ENTERTAINMENT</div>
-<h3>Entertainment जगत की ताजा खबरें</h3>
-</div>
+  <div class="section-head">
+    <h2>Trending News</h2>
+  </div>
 
-</section>
+  <section class="two-column">
+
+    <div class="latest-list">
+
+      <article class="latest-item">
+        <div class="number">1</div>
+        <div>
+          <div class="category">TRENDING</div>
+          <h3>आज की सबसे ज्यादा पढ़ी जा रही खबर</h3>
+        </div>
+      </article>
+
+      <article class="latest-item">
+        <div class="number">2</div>
+        <div>
+          <div class="category">TRENDING</div>
+          <h3>देश-दुनिया की एक और बड़ी खबर</h3>
+        </div>
+      </article>
+
+      <article class="latest-item">
+        <div class="number">3</div>
+        <div>
+          <div class="category">TRENDING</div>
+          <h3>Technology की बड़ी और महत्वपूर्ण खबर</h3>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="video-box">
+      <div class="play">▶</div>
+    </div>
+
+  </section>
 
 </main>
 
-<footer>
-<h2>NEWSMASTER</h2>
-<p>आपकी खबर, आपकी आवाज़।</p>
-<br>
-<p>© 2026 NEWSMASTER</p>
+<footer class="footer">
+
+  <div class="footer-inner">
+
+    <div>
+      <h2>NEWSMASTER</h2>
+      <p>
+        आपकी खबर, आपकी आवाज़। देश और दुनिया की ताजा खबरों के लिए NEWSMASTER से जुड़े रहें।
+      </p>
+    </div>
+
+    <div>
+      <h3>Categories</h3>
+      <p>भारत</p>
+      <p>दुनिया</p>
+      <p>बिजनेस</p>
+      <p>स्पोर्ट्स</p>
+    </div>
+
+    <div>
+      <h3>Important</h3>
+      <p>About Us</p>
+      <p>Contact</p>
+      <p>Privacy Policy</p>
+      <p>Terms & Conditions</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 NEWSMASTER — All Rights Reserved
+  </div>
+
 </footer>
+
+<script>
+function searchNews(){
+
+  const input = document.getElementById("searchInput");
+  const query = input.value.trim();
+
+  if(!query){
+    alert("कृपया कोई खबर खोजें।");
+    return;
+  }
+
+  alert("आपने खोजा: " + query);
+}
+</script>
 
 </body>
 </html>
