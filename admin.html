@@ -623,7 +623,7 @@ async function loadNews() {
 
   if (error) {
     list.innerHTML =
-      "<p>❌ News load failed: " + error.message + "</p>";
+      "<p>❌ News load failed: " + escapeHtml(error.message) + "</p>";
     return;
   }
 
@@ -655,39 +655,38 @@ async function loadNews() {
         : ""
       }
 
-  <h3>${escapeHtml(news.title)}</h3>
+      <h3>${escapeHtml(news.title)}</h3>
 
-<p>
-  <b>Category:</b>
-  ${escapeHtml(news.category)}
-</p>
+      <p>
+        <b>Category:</b>
+        ${escapeHtml(news.category)}
+      </p>
 
-<p>
-  <b>TOP NEWS:</b>
-  ${
-    news.is_top_news
-    ? "⭐ हाँ"
-    : "❌ नहीं"
-  }
-</p>
+      <p>
+        <b>TOP NEWS:</b>
+        ${news.is_top_news ? "⭐ हाँ" : "❌ नहीं"}
+      </p>
 
-<button
-  onclick="toggleTopNews(${news.id}, ${news.is_top_news ? "false" : "true"})"
-  style="background:${news.is_top_news ? "#333" : "#e31824"}">
-  ${
-    news.is_top_news
-    ? "❌ TOP NEWS से हटाएँ"
-    : "⭐ TOP NEWS में डालें"
-  }
-</button>
+      <button
+        onclick="toggleTopNews(${news.id}, ${!news.is_top_news})"
+        style="background:${news.is_top_news ? "#333" : "#e31824"}">
+        ${
+          news.is_top_news
+          ? "❌ TOP NEWS से हटाएँ"
+          : "⭐ TOP NEWS में डालें"
+        }
+      </button>
 
-<button onclick="editNews(${news.id})">
-  ✏️ Edit
-</button>
+      <button onclick="editNews(${news.id})">
+        ✏️ Edit
+      </button>
 
-<button
-  onclick="deleteNews(${news.id})"
-  async function toggleTopNews(id, status) {
+      <button
+        onclick="deleteNews(${news.id})"
+        style="background:#333">
+        🗑️ Delete
+      </button>
+    async function toggleTopNews(id, status) {
 
   const { error } = await supabaseClient
     .from("news")
@@ -708,112 +707,15 @@ async function loadNews() {
 
   alert(
     status
-    ? "⭐ खबर TOP NEWS में जोड़ दी गई!"
-    : "❌ खबर TOP NEWS से हटा दी गई!"
+      ? "⭐ खबर TOP NEWS में जोड़ दी गई!"
+      : "❌ खबर TOP NEWS से हटा दी गई!"
   );
 
   loadNews();
 }
-  style="background:#333">
-  🗑️ Delete
-</button>
-
-      <button
-        onclick="deleteNews(${news.id})"
-        style="background:#333">
-        🗑️ Delete
-      </button>
-    `;
 
     list.appendChild(div);
   });
-}
-
-
-async function editNews(id) {
-
-  const { data: news, error } =
-    await supabaseClient
-      .from("news")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-  if (error) {
-    alert("❌ News नहीं मिली");
-    return;
-  }
-
-  const title = prompt(
-    "नई Headline लिखें:",
-    news.title
-  );
-
-  if (title === null) return;
-
-  const description = prompt(
-    "पूरी जानकारी बदलें:",
-    news.description
-  );
-
-  if (description === null) return;
-
-  const category = prompt(
-    "Category बदलें:",
-    news.category
-  );
-
-  if (category === null) return;
-
-  const { error: updateError } =
-    await supabaseClient
-      .from("news")
-      .update({
-        title: title.trim(),
-        description: description.trim(),
-        category: category.trim()
-      })
-      .eq("id", id);
-
-  if (updateError) {
-    alert(
-      "❌ Update failed: " +
-      updateError.message
-    );
-    return;
-  }
-
-  alert("✅ News Update हो गई!");
-
-  loadNews();
-}
-
-
-async function deleteNews(id) {
-
-  if (!confirm(
-    "⚠️ क्या आप यह खबर Delete करना चाहते हैं?"
-  )) {
-    return;
-  }
-
-  const { error } =
-    await supabaseClient
-      .from("news")
-      .delete()
-      .eq("id", id);
-
-  if (error) {
-    alert(
-      "❌ Delete failed: " +
-      error.message
-    );
-    return;
-  }
-
-  alert("🗑️ News Delete हो गई!");
-
-  loadNews();
 }
 
 
