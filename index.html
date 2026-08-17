@@ -411,6 +411,24 @@ document.querySelectorAll(".card").forEach(function(card) {
 });
   
 </script>
+<section class="admin-upload">
+  <h2>📸 Add News Photo</h2>
 
+  <input type="file" id="newsPhoto" accept="image/*">
+
+  <br><br>
+
+  <img id="photoPreview"
+       style="display:none; max-width:300px; width:100%;"
+       alt="Photo Preview">
+
+  <br>
+
+  <button onclick="uploadNewsPhoto()">📤 Upload Photo</button>
+
+  <p id="uploadStatus"></p>
+</section>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 </body>
 </html>
