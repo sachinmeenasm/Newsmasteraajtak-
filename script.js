@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://zdupxbndazidvwrfvrhd.supabase.co/storage/v1/object/public/News%20image/Screenshot_20260727_090728.jpg";
+const SUPABASE_URL = "https://zdupxbndazidvwrfvrhd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_NSWujieJHbKrNORTwJa9oQ_HJvaqZdq";
 
 const supabaseClient = window.supabase.createClient(
