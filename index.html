@@ -412,6 +412,65 @@ document.querySelectorAll(".card").forEach(function(card) {
   
 </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js"></script>
+<script>
+const NEWSMASTER_URL =
+"https://zdupxbndazidvwrfvrhd.supabase.co";
+
+const NEWSMASTER_KEY =
+"sb_publishable_NSWujieJHbKrNORTwJa9oQ_HJvaqZdq";
+
+const newsClient = supabase.createClient(
+  NEWSMASTER_URL,
+  NEWSMASTER_KEY
+);
+
+async function loadNews() {
+
+  const { data, error } = await newsClient
+    .from("news")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("News loading error:", error);
+    return;
+  }
+
+  const grid = document.querySelector(".grid");
+
+  if (!grid || !data) return;
+
+  data.forEach(news => {
+
+    const card = document.createElement("a");
+
+    card.href = "article.html";
+    card.className = "card";
+
+    card.innerHTML = `
+      ${
+        news.image_url
+        ? `<img src="${news.image_url}"
+             style="width:100%;height:170px;object-fit:cover;"
+             alt="${news.title}">`
+        : `<div class="pic">${news.category}</div>`
+      }
+
+      <div class="card-content">
+        <div class="tag">${news.category}</div>
+
+        <h3>${news.title}</h3>
+
+        <p>${news.description}</p>
+      </div>
+    `;
+
+    grid.prepend(card);
+  });
+}
+
+loadNews();
+</script>
+  <script src="script.js"></script>
 </body>
 </html>
