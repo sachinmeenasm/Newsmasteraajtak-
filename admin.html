@@ -655,15 +655,68 @@ async function loadNews() {
         : ""
       }
 
-      <h3>${escapeHtml(news.title)}</h3>
+  <h3>${escapeHtml(news.title)}</h3>
 
-      <p><b>Category:</b>
-        ${escapeHtml(news.category)}
-      </p>
+<p>
+  <b>Category:</b>
+  ${escapeHtml(news.category)}
+</p>
 
-      <button onclick="editNews(${news.id})">
-        ✏️ Edit
-      </button>
+<p>
+  <b>TOP NEWS:</b>
+  ${
+    news.is_top_news
+    ? "⭐ हाँ"
+    : "❌ नहीं"
+  }
+</p>
+
+<button
+  onclick="toggleTopNews(${news.id}, ${news.is_top_news ? "false" : "true"})"
+  style="background:${news.is_top_news ? "#333" : "#e31824"}">
+  ${
+    news.is_top_news
+    ? "❌ TOP NEWS से हटाएँ"
+    : "⭐ TOP NEWS में डालें"
+  }
+</button>
+
+<button onclick="editNews(${news.id})">
+  ✏️ Edit
+</button>
+
+<button
+  onclick="deleteNews(${news.id})"
+  async function toggleTopNews(id, status) {
+
+  const { error } = await supabaseClient
+    .from("news")
+    .update({
+      is_top_news: status
+    })
+    .eq("id", id);
+
+  if (error) {
+
+    alert(
+      "❌ TOP NEWS update failed: " +
+      error.message
+    );
+
+    return;
+  }
+
+  alert(
+    status
+    ? "⭐ खबर TOP NEWS में जोड़ दी गई!"
+    : "❌ खबर TOP NEWS से हटा दी गई!"
+  );
+
+  loadNews();
+}
+  style="background:#333">
+  🗑️ Delete
+</button>
 
       <button
         onclick="deleteNews(${news.id})"
