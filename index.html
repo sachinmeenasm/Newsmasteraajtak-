@@ -3,474 +3,1264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>NEWSMASTER | Hindi News</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
 body{
   font-family:Arial,"Noto Sans Devanagari",sans-serif;
-  background:#f4f4f4;color:#222
+  background:#f4f4f4;
+  color:#222;
 }
-a{text-decoration:none;color:inherit}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+
+/* =========================
+   HEADER
+========================= */
 
 .header{
   background:#fff;
-  position:sticky;top:0;z-index:1000;
-  box-shadow:0 2px 8px #0002
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 2px 8px #0002;
 }
+
 .top{
-  max-width:1200px;margin:auto;
-  min-height:80px;padding:15px 20px;
-  display:flex;align-items:center;
-  justify-content:space-between;gap:20px
+  max-width:1200px;
+  margin:auto;
+  min-height:80px;
+  padding:15px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
 }
+
 .logo{
-  font-size:34px;font-weight:900;
-  letter-spacing:-1px
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:-1px;
 }
-.logo span{color:#e31824}
-.logo b{color:#111}
+
+.logo span{
+  color:#e31824;
+}
+
+.logo b{
+  color:#111;
+}
 
 .search{
-  width:280px;padding:12px 18px;
-  border:1px solid #ddd;border-radius:25px;
-  font-size:16px
+  width:280px;
+  padding:12px 18px;
+  border:1px solid #ddd;
+  border-radius:25px;
+  font-size:16px;
 }
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
 .nav{
-  background:#111;color:white;
-  overflow:auto;white-space:nowrap
+  background:#111;
+  color:white;
+  overflow:auto;
+  white-space:nowrap;
 }
+
 .nav-inner{
-  max-width:1200px;margin:auto;
-  display:flex
+  max-width:1200px;
+  margin:auto;
+  display:flex;
 }
+
 .nav a{
   padding:16px 22px;
-  display:block;font-size:17px
+  display:block;
+  font-size:17px;
 }
-.nav a:hover,.nav a.active{background:#e31824}
+
+.nav a:hover,
+.nav a.active{
+  background:#e31824;
+}
+
+
+/* =========================
+   BREAKING
+========================= */
 
 .breaking{
-  background:#e31824;color:#fff;
-  padding:13px;text-align:center;
-  font-size:18px;font-weight:bold
+  background:#e31824;
+  color:#fff;
+  padding:13px;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
 }
 
+
+/* =========================
+   CONTAINER
+========================= */
+
 .container{
-  max-width:1200px;margin:25px auto;padding:0 15px
+  max-width:1200px;
+  margin:25px auto;
+  padding:0 15px;
 }
+
+
+/* =========================
+   TOP NEWS
+========================= */
 
 .hero{
   display:grid;
   grid-template-columns:2fr 1fr;
-  gap:20px;margin-bottom:25px
+  gap:20px;
+  margin-bottom:25px;
 }
+
 .hero-main{
   min-height:360px;
   border-radius:16px;
-  padding:35px;
+  overflow:hidden;
+  position:relative;
   color:#fff;
-  display:flex;flex-direction:column;
+  display:flex;
+  flex-direction:column;
   justify-content:flex-end;
-  background:linear-gradient(135deg,#222,#555)
+  padding:35px;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0,0,0,.85),
+      rgba(0,0,0,.1)
+    ),
+    #444;
 }
+
+.hero-main img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+
+.hero-overlay{
+  position:relative;
+  z-index:2;
+}
+
 .tag{
-  color:#e31824;font-weight:bold;
-  margin-bottom:10px
+  color:#e31824;
+  font-weight:bold;
+  margin-bottom:10px;
 }
-.hero-main .tag{color:#ffdbde}
+
+.hero-main .tag{
+  color:#ffdbde;
+}
+
 .hero h1{
-  font-size:38px;line-height:1.25;
-  margin-bottom:12px
+  font-size:38px;
+  line-height:1.25;
+  margin-bottom:12px;
 }
-.hero p{font-size:18px;line-height:1.6}
+
+.hero p{
+  font-size:18px;
+  line-height:1.6;
+}
+
+
+/* =========================
+   SIDE NEWS
+========================= */
 
 .side{
-  display:flex;flex-direction:column;gap:15px
+  display:flex;
+  flex-direction:column;
+  gap:15px;
 }
+
 .side-card{
-  background:#fff;padding:20px;
+  background:#fff;
+  padding:20px;
   border-radius:14px;
-  box-shadow:0 2px 10px #0001
+  box-shadow:0 2px 10px #0001;
 }
+
 .side-card h3{
-  font-size:20px;line-height:1.4
+  font-size:20px;
+  line-height:1.4;
 }
+
+
+/* =========================
+   SECTION TITLE
+========================= */
 
 .section-title{
   border-left:6px solid #e31824;
-  padding-left:12px;margin:30px 0 18px;
-  font-size:28px
+  padding-left:12px;
+  margin:30px 0 18px;
+  font-size:28px;
 }
+
+
+/* =========================
+   NEWS GRID
+========================= */
 
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:20px
+  gap:20px;
 }
+
 .card{
-  background:#fff;border-radius:14px;
+  background:#fff;
+  border-radius:14px;
   overflow:hidden;
   box-shadow:0 2px 10px #0001;
-  transition:.2s
+  transition:.2s;
 }
-.card:hover{transform:translateY(-4px)}
+
+.card:hover{
+  transform:translateY(-4px);
+}
+
 .pic{
   height:170px;
   background:linear-gradient(135deg,#ddd,#888);
-  display:flex;align-items:center;
+  display:flex;
+  align-items:center;
   justify-content:center;
-  color:#fff;font-size:24px;font-weight:bold
+  color:#fff;
+  font-size:24px;
+  font-weight:bold;
 }
-.card-content{padding:18px}
+
+.card-image{
+  width:100%;
+  height:170px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:18px;
+}
+
 .card h3{
-  font-size:20px;line-height:1.45;
-  margin:8px 0
+  font-size:20px;
+  line-height:1.45;
+  margin:8px 0;
 }
-.card p{color:#666;line-height:1.5}
+
+.card p{
+  color:#666;
+  line-height:1.5;
+}
+
+
+/* =========================
+   LATEST
+========================= */
 
 .latest{
   display:grid;
   grid-template-columns:2fr 1fr;
-  gap:25px
+  gap:25px;
 }
+
 .news-list{
-  background:#fff;border-radius:14px;
-  padding:5px 20px
+  background:#fff;
+  border-radius:14px;
+  padding:5px 20px;
 }
+
 .news{
   padding:18px 5px;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
-.news:last-child{border-bottom:0}
-.news h3{font-size:20px;line-height:1.4}
-.news small{color:#e31824;font-weight:bold}
+
+.news:last-child{
+  border-bottom:0;
+}
+
+.news h3{
+  font-size:20px;
+  line-height:1.4;
+}
+
+.news small{
+  color:#e31824;
+  font-weight:bold;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
 
 .sidebar{
-  background:#fff;border-radius:14px;
-  padding:20px;height:max-content
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  height:max-content;
 }
+
 .sidebar h3{
   border-bottom:3px solid #e31824;
-  padding-bottom:12px;margin-bottom:10px
+  padding-bottom:12px;
+  margin-bottom:10px;
 }
+
 .trend{
   padding:14px 0;
-  border-bottom:1px solid #eee
+  border-bottom:1px solid #eee;
 }
+
+
+/* =========================
+   FOOTER
+========================= */
 
 .footer{
-  margin-top:45px;background:#111;
-  color:#ddd;text-align:center;
-  padding:35px 15px;line-height:2
+  margin-top:45px;
+  background:#111;
+  color:#ddd;
+  text-align:center;
+  padding:35px 15px;
+  line-height:2;
 }
-.footer b{color:#e31824}
+
+.footer b{
+  color:#e31824;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:800px){
-  .top{min-height:70px;padding:12px}
-  .logo{font-size:27px}
-  .search{width:150px;padding:10px}
-  .nav a{padding:14px 16px;font-size:15px}
-  .hero,.latest{grid-template-columns:1fr}
-  .hero-main{min-height:320px}
-  .hero h1{font-size:30px}
-  .grid{grid-template-columns:1fr}
-  .section-title{font-size:24px}
+
+  .top{
+    min-height:70px;
+    padding:12px;
+  }
+
+  .logo{
+    font-size:27px;
+  }
+
+  .search{
+    width:150px;
+    padding:10px;
+  }
+
+  .nav a{
+    padding:14px 16px;
+    font-size:15px;
+  }
+
+  .hero,
+  .latest{
+    grid-template-columns:1fr;
+  }
+
+  .hero-main{
+    min-height:320px;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-title{
+    font-size:24px;
+  }
+
 }
+
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  text-align:center;
+  padding:30px;
+  font-size:18px;
+}
+
+.no-news{
+  background:#fff;
+  padding:25px;
+  border-radius:12px;
+  text-align:center;
+}
+
 </style>
 </head>
 
+
 <body>
 
+
+<!-- =========================
+     HEADER
+========================= -->
+
 <header class="header">
+
   <div class="top">
+
     <div class="logo">
       <span>NEWS</span><b>MASTER</b>
     </div>
-    <input class="search" id="search"
-           type="search" placeholder="खबर खोजें...">
+
+    <input
+      class="search"
+      id="search"
+      type="search"
+      placeholder="खबर खोजें..."
+    >
+
   </div>
 
+
   <nav class="nav">
+
     <div class="nav-inner">
-      <a class="active" href="#">होम</a>
-      <a href="#">ब्रेकिंग न्यूज़</a>
-      <a href="#">भारत</a>
-      <a href="#">दुनिया</a>
-      <a href="#">राजनीति</a>
-      <a href="#">बिजनेस</a>
-      <a href="#">टेक्नोलॉजी</a>
-      <a href="#">स्पोर्ट्स</a>
-      <a href="#">मनोरंजन</a>
+
+      <a class="active" href="#">
+        होम
+      </a>
+
+      <a href="#">
+        ब्रेकिंग न्यूज़
+      </a>
+
+      <a href="#">
+        भारत
+      </a>
+
+      <a href="#">
+        दुनिया
+      </a>
+
+      <a href="#">
+        राजनीति
+      </a>
+
+      <a href="#">
+        बिजनेस
+      </a>
+
+      <a href="#">
+        टेक्नोलॉजी
+      </a>
+
+      <a href="#">
+        स्पोर्ट्स
+      </a>
+
+      <a href="#">
+        मनोरंजन
+      </a>
+
     </div>
+
   </nav>
+
 </header>
 
+
+<!-- =========================
+     BREAKING NEWS
+========================= -->
+
 <div class="breaking">
-  🔴 BREAKING NEWS — देश और दुनिया की बड़ी खबरें सबसे पहले
+
+  🔴 BREAKING NEWS —
+  देश और दुनिया की बड़ी खबरें सबसे पहले
+
 </div>
+
 
 <main class="container">
 
-<section class="hero">
+
+<!-- =========================
+     TOP NEWS
+========================= -->
+
+<section class="hero" id="topNewsSection">
 
   <article class="hero-main">
-    <div class="tag">TOP NEWS</div>
-    <h1>देश-दुनिया की बड़ी खबरों पर NEWSMASTER की खास नजर</h1>
-    <p>ताजा खबरें, महत्वपूर्ण समाचार और हर बड़ी अपडेट एक जगह।</p>
+
+    <div class="hero-overlay">
+
+      <div class="tag">
+        ⭐ TOP NEWS
+      </div>
+
+      <h1 id="topTitle">
+        TOP NEWS लोड हो रही है...
+      </h1>
+
+      <p id="topDescription">
+        कृपया प्रतीक्षा करें...
+      </p>
+
+    </div>
+
   </article>
 
-  <div class="side">
+
+  <div class="side" id="topSideNews">
 
     <article class="side-card">
-      <div class="tag">भारत</div>
-      <h3>भारत से जुड़ी आज की बड़ी खबरें और ताजा अपडेट</h3>
+
+      <div class="tag">
+        भारत
+      </div>
+
+      <h3>
+        भारत की बड़ी खबरें
+      </h3>
+
     </article>
 
     <article class="side-card">
-      <div class="tag">दुनिया</div>
-      <h3>दुनिया की महत्वपूर्ण खबरों पर हमारी नजर</h3>
+
+      <div class="tag">
+        दुनिया
+      </div>
+
+      <h3>
+        दुनिया की महत्वपूर्ण खबरें
+      </h3>
+
     </article>
 
     <article class="side-card">
-      <div class="tag">स्पोर्ट्स</div>
-      <h3>खेल जगत की हर बड़ी खबर और अपडेट</h3>
+
+      <div class="tag">
+        स्पोर्ट्स
+      </div>
+
+      <h3>
+        खेल जगत की बड़ी खबरें
+      </h3>
+
     </article>
 
   </div>
-</section>
-
-<h2 class="section-title">ताजा खबरें</h2>
-
-<section class="grid">
-
-<a href="article.html" class="card">
-  <div class="pic">INDIA</div>
-  <div class="card-content">
-    <div class="tag">भारत</div>
-    <h3>भारत की आज की बड़ी खबरें और ताजा अपडेट</h3>
-    <p>देशभर से महत्वपूर्ण समाचार यहां पढ़ें।</p>
-  </div>
-</a>
-  
-<a href="article.html" class="card">
-  <div class="pic">WORLD</div>
-  <div class="card-content">
-    <div class="tag">दुनिया</div>
-    <h3>दुनिया भर की बड़ी खबरों पर खास नजर</h3>
-    <p>International news और महत्वपूर्ण अपडेट।</p>
-  </div>
-</a>
-
-<a href="article.html" class="card">
-  <div class="pic">TECH</div>
-  <div class="card-content">
-    <div class="tag">टेक्नोलॉजी</div>
-    <h3>टेक्नोलॉजी की नई खबरें और अपडेट</h3>
-    <p>Technology की दुनिया की ताजा जानकारी।</p>
-  </div>
-</a>
-
-<a href="article.html" class="card">
-  <div class="pic">SPORTS</div>
-  <div class="card-content">
-    <div class="tag">स्पोर्ट्स</div>
-    <h3>खेल जगत की बड़ी खबरें</h3>
-    <p>क्रिकेट और अन्य खेलों की ताजा खबरें।</p>
-  </div>
-</a>
-
-<a href="article.html" class="card">
-  <div class="pic">BUSINESS</div>
-  <div class="card-content">
-    <div class="tag">बिजनेस</div>
-    <h3>बिजनेस और अर्थव्यवस्था की खबरें</h3>
-    <p>Market और economy की महत्वपूर्ण अपडेट।</p>
-  </div>
-</a>
-
-<a href="article.html" class="card">
-  <div class="pic">ENTERTAINMENT</div>
-  <div class="card-content">
-    <div class="tag">मनोरंजन</div>
-    <h3>मनोरंजन जगत की ताजा खबरें</h3>
-    <p>फिल्म, टीवी और मनोरंजन की खबरें।</p>
-  </div>
-</a>
 
 </section>
 
-<h2 class="section-title">लेटेस्ट न्यूज़</h2>
+
+<!-- =========================
+     TOP NEWS LIST
+========================= -->
+
+<h2 class="section-title">
+  ⭐ TOP NEWS
+</h2>
+
+<section
+  id="topNewsList"
+  class="grid"
+>
+
+  <div class="loading">
+    TOP NEWS लोड हो रही है...
+  </div>
+
+</section>
+
+
+<!-- =========================
+     ALL NEWS
+========================= -->
+
+<h2 class="section-title">
+  📰 ताजा खबरें
+</h2>
+
+
+<section
+  class="grid"
+  id="newsGrid"
+>
+
+  <div class="loading">
+    खबरें लोड हो रही हैं...
+  </div>
+
+</section>
+
+
+<!-- =========================
+     LATEST NEWS
+========================= -->
+
+<h2 class="section-title">
+  लेटेस्ट न्यूज़
+</h2>
+
 
 <section class="latest">
 
-<div class="news-list">
 
-<article class="news">
-  <small>भारत • अभी</small>
-  <h3>देश की बड़ी खबरों और महत्वपूर्ण घटनाओं का नया अपडेट</h3>
-</article>
+  <div
+    class="news-list"
+    id="latestNews"
+  >
 
-<article class="news">
-  <small>राजनीति • आज</small>
-  <h3>राजनीतिक जगत से सामने आया बड़ा अपडेट</h3>
-</article>
+    <div class="loading">
+      लोड हो रही है...
+    </div>
 
-<article class="news">
-  <small>बिजनेस • आज</small>
-  <h3>बाजार और अर्थव्यवस्था से जुड़ी महत्वपूर्ण खबर</h3>
-</article>
+  </div>
 
-<article class="news">
-  <small>स्पोर्ट्स • आज</small>
-  <h3>खेल जगत में आज क्या हुआ? जानिए पूरी खबर</h3>
-</article>
 
-</div>
+  <aside class="sidebar">
 
-<aside class="sidebar">
-  <h3>🔥 सबसे ज्यादा पढ़ी गई</h3>
+    <h3>
+      🔥 सबसे ज्यादा पढ़ी गई
+    </h3>
 
-  <div class="trend">01 — देश की बड़ी खबरें</div>
-  <div class="trend">02 — आज का बड़ा अपडेट</div>
-  <div class="trend">03 — राजनीति की ताजा खबर</div>
-  <div class="trend">04 — खेल जगत की खबर</div>
-  <div class="trend">05 — टेक्नोलॉजी अपडेट</div>
-</aside>
+    <div class="trend">
+      01 — देश की बड़ी खबरें
+    </div>
+
+    <div class="trend">
+      02 — आज का बड़ा अपडेट
+    </div>
+
+    <div class="trend">
+      03 — राजनीति की ताजा खबर
+    </div>
+
+    <div class="trend">
+      04 — खेल जगत की खबर
+    </div>
+
+    <div class="trend">
+      05 — टेक्नोलॉजी अपडेट
+    </div>
+
+  </aside>
 
 </section>
 
+
 </main>
 
+
+<!-- =========================
+     FOOTER
+========================= -->
+
 <footer class="footer">
-  <h2><b>NEWS</b>MASTER</h2>
-  <p>आपकी खबर, सबसे पहले।</p>
-  <p>© 2026 NEWSMASTER. All Rights Reserved.</p>
+
+  <h2>
+    <b>NEWS</b>MASTER
+  </h2>
+
+  <p>
+    आपकी खबर, सबसे पहले।
+  </p>
+
+  <p>
+    © 2026 NEWSMASTER.
+    All Rights Reserved.
+  </p>
+
 </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
 <script>
-const search = document.getElementById("search");
 
-search.addEventListener("input", function(){
-  const value = this.value.toLowerCase();
+/* =========================
+   SUPABASE
+========================= */
 
-  document.querySelectorAll(".card,.news,.side-card")
-  .forEach(item => {
-    item.style.display =
-      item.innerText.toLowerCase().includes(value)
-      ? "" : "none";
-  });
-});
-
-  // Category menu
-document.querySelectorAll(".nav a").forEach(link => {
-  link.addEventListener("click", function(e) {
-    e.preventDefault();
-
-    document.querySelectorAll(".nav a")
-      .forEach(x => x.classList.remove("active"));
-
-    this.classList.add("active");
-
-    const category = this.innerText.trim();
-
-    if (category === "होम") {
-      document.querySelectorAll(".card,.news,.side-card")
-        .forEach(x => x.style.display = "");
-      return;
-    }
-
-    document.querySelectorAll(".card,.news,.side-card")
-      .forEach(item => {
-        const text = item.innerText;
-
-        if (text.includes(category)) {
-          item.style.display = "";
-        } else {
-          item.style.display = "none";
-        }
-      });
-  });
-});
-
-// Breaking news animation
-const breaking = document.querySelector(".breaking");
-
-setInterval(() => {
-  breaking.style.opacity =
-    breaking.style.opacity === "0.6" ? "1" : "0.6";
-}, 700);
-
-  // Make news cards clickable
-document.querySelectorAll(".card").forEach(function(card) {
-    card.style.cursor = "pointer";
-
-    card.addEventListener("click", function() {
-        window.location.href = "article.html";
-    });
-});
-  
-</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
 const NEWSMASTER_URL =
 "https://zdupxbndazidvwrfvrhd.supabase.co";
 
 const NEWSMASTER_KEY =
 "sb_publishable_NSWujieJHbKrNORTwJa9oQ_HJvaqZdq";
 
-const newsClient = supabase.createClient(
+const newsClient =
+supabase.createClient(
   NEWSMASTER_URL,
   NEWSMASTER_KEY
 );
 
-async function loadNews() {
 
-  const { data, error } = await newsClient
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(text){
+
+  return String(text || "")
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   LOAD TOP NEWS
+========================= */
+
+async function loadTopNews(){
+
+  const {
+    data,
+    error
+  } =
+  await newsClient
+
     .from("news")
-    .select("*")
-    .order("created_at", { ascending: false });
 
-  if (error) {
-    console.log("News loading error:", error);
+    .select("*")
+
+    .eq(
+      "is_top_news",
+      true
+    )
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "TOP NEWS ERROR:",
+      error
+    );
+
+    document.getElementById(
+      "topTitle"
+    ).innerText =
+      "TOP NEWS लोड नहीं हो सकी";
+
     return;
+
   }
 
-  const grid = document.querySelector(".grid");
 
-  if (!grid || !data) return;
+  const topList =
+    document.getElementById(
+      "topNewsList"
+    );
+
+
+  topList.innerHTML = "";
+
+
+  /* =========================
+     NO TOP NEWS
+  ========================= */
+
+  if(!data || data.length === 0){
+
+    document.getElementById(
+      "topTitle"
+    ).innerText =
+      "अभी कोई TOP NEWS नहीं है";
+
+    document.getElementById(
+      "topDescription"
+    ).innerText =
+      "Admin Panel से किसी खबर को TOP NEWS में जोड़ें।";
+
+    topList.innerHTML = `
+
+      <div class="no-news">
+
+        ⭐ अभी कोई TOP NEWS उपलब्ध नहीं है।
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  /* =========================
+     HERO TOP NEWS
+  ========================= */
+
+  const first =
+    data[0];
+
+
+  document.getElementById(
+    "topTitle"
+  ).innerText =
+    first.title;
+
+
+  document.getElementById(
+    "topDescription"
+  ).innerText =
+    first.description || "";
+
+
+  const hero =
+    document.querySelector(
+      ".hero-main"
+    );
+
+
+  if(first.image_url){
+
+    hero.style.backgroundImage =
+      `
+      linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.1)
+      ),
+      url("${first.image_url}")
+      `;
+
+  }
+
+
+  /* =========================
+     TOP NEWS CARDS
+  ========================= */
 
   data.forEach(news => {
 
-    const card = document.createElement("a");
+    const card =
+      document.createElement("a");
 
-    card.href = "article.html";
-    card.className = "card";
+
+    card.href =
+      "article.html?id=" +
+      encodeURIComponent(news.id);
+
+
+    card.className =
+      "card";
+
 
     card.innerHTML = `
+
       ${
         news.image_url
-        ? `<img src="${news.image_url}"
-             style="width:100%;height:170px;object-fit:cover;"
-             alt="${news.title}">`
-        : `<div class="pic">${news.category}</div>`
+
+        ?
+
+        `
+        <img
+          class="card-image"
+          src="${escapeHtml(news.image_url)}"
+          alt="${escapeHtml(news.title)}"
+        >
+        `
+
+        :
+
+        `
+        <div class="pic">
+          ${escapeHtml(news.category)}
+        </div>
+        `
       }
 
+
       <div class="card-content">
-        <div class="tag">${news.category}</div>
 
-        <h3>${news.title}</h3>
+        <div class="tag">
 
-        <p>${news.description}</p>
+          ⭐ TOP NEWS •
+          ${escapeHtml(news.category)}
+
+        </div>
+
+
+        <h3>
+          ${escapeHtml(news.title)}
+        </h3>
+
+
+        <p>
+          ${escapeHtml(news.description)}
+        </p>
+
+      </div>
+
+    `;
+
+
+    topList.appendChild(card);
+
+  });
+
+}
+
+
+/* =========================
+   LOAD ALL NEWS
+========================= */
+
+async function loadNews(){
+
+  const {
+    data,
+    error
+  } =
+  await newsClient
+
+    .from("news")
+
+    .select("*")
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "NEWS ERROR:",
+      error
+    );
+
+    return;
+
+  }
+
+
+  const grid =
+    document.getElementById(
+      "newsGrid"
+    );
+
+
+  const latest =
+    document.getElementById(
+      "latestNews"
+    );
+
+
+  grid.innerHTML = "";
+
+  latest.innerHTML = "";
+
+
+  if(!data || data.length === 0){
+
+    grid.innerHTML = `
+      <div class="no-news">
+        अभी कोई खबर उपलब्ध नहीं है।
       </div>
     `;
 
-    grid.prepend(card);
+    return;
+
+  }
+
+
+  /* =========================
+     NEWS CARDS
+  ========================= */
+
+  data.forEach(news => {
+
+    const card =
+      document.createElement("a");
+
+
+    card.href =
+      "article.html?id=" +
+      encodeURIComponent(news.id);
+
+
+    card.className =
+      "card";
+
+
+    card.innerHTML = `
+
+      ${
+        news.image_url
+
+        ?
+
+        `
+        <img
+          class="card-image"
+          src="${escapeHtml(news.image_url)}"
+          alt="${escapeHtml(news.title)}"
+        >
+        `
+
+        :
+
+        `
+        <div class="pic">
+          ${escapeHtml(news.category)}
+        </div>
+        `
+      }
+
+
+      <div class="card-content">
+
+        <div class="tag">
+
+          ${escapeHtml(news.category)}
+
+        </div>
+
+
+        <h3>
+          ${escapeHtml(news.title)}
+        </h3>
+
+
+        <p>
+          ${escapeHtml(news.description)}
+        </p>
+
+      </div>
+
+    `;
+
+
+    grid.appendChild(card);
+
+
+    /* =========================
+       LATEST NEWS
+    ========================= */
+
+    const item =
+      document.createElement("article");
+
+
+    item.className =
+      "news";
+
+
+    item.innerHTML = `
+
+      <small>
+        ${escapeHtml(news.category)}
+        • अभी
+      </small>
+
+
+      <h3>
+        ${escapeHtml(news.title)}
+      </h3>
+
+    `;
+
+
+    latest.appendChild(item);
+
   });
+
 }
 
+
+/* =========================
+   SEARCH
+========================= */
+
+const search =
+document.getElementById(
+  "search"
+);
+
+
+search.addEventListener(
+  "input",
+  function(){
+
+    const value =
+      this.value
+        .toLowerCase()
+        .trim();
+
+
+    document
+      .querySelectorAll(
+        ".card,.news,.side-card"
+      )
+      .forEach(item => {
+
+        item.style.display =
+          item.innerText
+            .toLowerCase()
+            .includes(value)
+          ? ""
+          : "none";
+
+      });
+
+  }
+);
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+document
+  .querySelectorAll(".nav a")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      function(e){
+
+        e.preventDefault();
+
+
+        document
+          .querySelectorAll(
+            ".nav a"
+          )
+          .forEach(x =>
+            x.classList.remove(
+              "active"
+            )
+          );
+
+
+        this.classList.add(
+          "active"
+        );
+
+
+        const category =
+          this.innerText.trim();
+
+
+        if(category === "होम"){
+
+          document
+            .querySelectorAll(
+              ".card,.news,.side-card"
+            )
+            .forEach(x =>
+              x.style.display=""
+            );
+
+          return;
+
+        }
+
+
+        document
+          .querySelectorAll(
+            ".card,.news,.side-card"
+          )
+          .forEach(item => {
+
+            item.style.display =
+              item.innerText
+                .includes(category)
+              ? ""
+              : "none";
+
+          });
+
+      }
+    );
+
+  });
+
+
+/* =========================
+   BREAKING ANIMATION
+========================= */
+
+const breaking =
+document.querySelector(
+  ".breaking"
+);
+
+
+setInterval(() => {
+
+  breaking.style.opacity =
+    breaking.style.opacity === "0.6"
+      ? "1"
+      : "0.6";
+
+},700);
+
+
+/* =========================
+   START
+========================= */
+
+loadTopNews();
+
 loadNews();
+
 </script>
-  <script src="script.js"></script>
+
 </body>
 </html>
