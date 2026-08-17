@@ -208,7 +208,63 @@ button.logout{
   <button onclick="uploadNews()">
     📤 खबर Publish करें
   </button>
+<hr style="margin:35px 0">
 
+<h2>🎬 NEWS SHORTS Upload</h2>
+
+<label>Short का Title</label>
+
+<input
+  type="text"
+  id="shortTitle"
+  placeholder="आज की बड़ी खबर सिर्फ 30 सेकंड में">
+
+
+<label>Short Category</label>
+
+<select id="shortCategory">
+  <option value="भारत">भारत</option>
+  <option value="दुनिया">दुनिया</option>
+  <option value="राजनीति">राजनीति</option>
+  <option value="बिजनेस">बिजनेस</option>
+  <option value="टेक्नोलॉजी">टेक्नोलॉजी</option>
+  <option value="स्पोर्ट्स">स्पोर्ट्स</option>
+  <option value="मनोरंजन">मनोरंजन</option>
+</select>
+
+
+<label>🎬 Short Video</label>
+
+<input
+  type="file"
+  id="shortVideo"
+  accept="video/*">
+
+
+<label>🖼️ Short Thumbnail</label>
+
+<input
+  type="file"
+  id="shortThumbnail"
+  accept="image/*">
+
+
+<button onclick="uploadShort()">
+  🎬 Short Upload करें
+</button>
+
+<p id="shortStatus"></p>
+
+
+<hr style="margin:35px 0">
+
+<h2>📋 सभी Shorts Manage करें</h2>
+
+<button onclick="loadShorts()">
+  🔄 Shorts List Refresh करें
+</button>
+
+<div id="shortsList"></div>
 <hr style="margin:35px 0">
 
 <h2>📋 सभी खबरें Manage करें</h2>
@@ -971,6 +1027,552 @@ async function editNews(id){
 
 }
 
+  /* =========================
+   UPLOAD SHORT
+========================= */
+
+async function uploadShort(){
+
+  const {
+    data:{ session }
+  } = await supabaseClient.auth.getSession();
+
+  if(!session){
+
+    alert("पहले Admin Login करें।");
+
+    showLogin();
+
+    return;
+  }
+
+
+  const title =
+    document.getElementById("shortTitle")
+    .value.trim();
+
+
+  const category =
+    document.getElementById("shortCategory")
+    .value;
+
+
+  const videoFile =
+    document.getElementById("shortVideo")
+    .files[0];
+
+
+  const thumbnailFile =
+    document.getElementById("shortThumbnail")
+    .files[0];
+
+
+  const status =
+    document.getElementById("shortStatus");
+
+
+  if(!title || !videoFile){
+
+    status.innerText =
+      "⚠️ Title और Video जरूरी है।";
+
+    status.className="error";
+
+    return;
+  }
+
+
+  status.innerText =
+    "⏳ Video upload हो रहा है...";
+
+
+  const videoPath =
+    Date.now() +
+    "-" +
+    videoFile.name.replace(/\s+/g,"-");
+
+
+  const {
+    error:videoError
+  } =
+  await supabaseClient.storage
+    .from("short-videos")
+    .upload(
+      videoPath,
+      videoFile
+    );
+
+
+  if(videoError){
+
+    status.innerText =
+      "❌ Video upload failed: " +
+      videoError.message;
+
+    status.className="error";
+
+    return;
+  }
+
+
+  const {
+    data:videoData
+  } =
+  supabaseClient.storage
+    .from("short-videos")
+    .getPublicUrl(videoPath);
+
+
+  const videoUrl =
+    videoData.publicUrl;
+
+
+  let thumbnailUrl = null;
+  let thumbnailPath = null;
+
+
+  /* THUMBNAIL */
+
+  if(thumbnailFile){
+
+    status.innerText =
+      "⏳ Thumbnail upload हो रहा है...";
+
+
+    thumbnailPath =
+      Date.now() +
+      "-" +
+      thumbnailFile.name.replace(/\s+/g,"-");
+
+
+    const {
+      error:thumbnailError
+    } =
+    await supabaseClient.storage
+      .from("short-thumbnails")
+      .upload(
+        thumbnailPath,
+        thumbnailFile
+      );
+
+
+    if(thumbnailError){
+
+      status.innerText =
+        "❌ Thumbnail upload failed: " +
+        thumbnailError.message;
+
+      status.className="error";
+
+      return;
+    }
+
+
+    const {
+      data:thumbnailData
+    } =
+    supabaseClient.storage
+      .from("short-thumbnails")
+      .getPublicUrl(
+        thumbnailPath
+      );
+
+
+    thumbnailUrl =
+      thumbnailData.publicUrl;
+  }
+
+
+  /* DATABASE */
+
+  status.innerText =
+    "⏳ Short save हो रहा है...";
+
+
+  const {
+    error:saveError
+  } =
+  await supabaseClient
+    .from("shorts")
+    .insert({
+
+      title:title,
+
+      category:category,
+
+      video_url:videoUrl,
+
+      thumbnail_url:thumbnailUrl,
+
+      video_path:videoPath,
+
+      thumbnail_path:thumbnailPath
+
+    });
+
+
+  if(saveError){
+
+    status.innerText =
+      "❌ Short save failed: " +
+      saveError.message;
+
+    status.className="error";
+
+    return;
+  }
+
+
+  status.innerText =
+    "✅ Short successfully uploaded!";
+
+  status.className="success";
+
+
+  document.getElementById("shortTitle")
+    .value="";
+
+
+  document.getElementById("shortVideo")
+    .value="";
+
+
+  document.getElementById("shortThumbnail")
+    .value="";
+
+
+  loadShorts();
+}
+
+
+/* =========================
+   LOAD SHORTS
+========================= */
+
+async function loadShorts(){
+
+  const {
+    data:{ session }
+  } = await supabaseClient.auth.getSession();
+
+
+  if(!session) return;
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("shorts")
+    .select("*")
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+  const list =
+    document.getElementById("shortsList");
+
+
+  if(error){
+
+    list.innerHTML =
+      "<p class='error'>❌ Shorts load failed: " +
+      escapeHtml(error.message) +
+      "</p>";
+
+    return;
+  }
+
+
+  if(!data || data.length===0){
+
+    list.innerHTML =
+      "<p>अभी कोई Short upload नहीं है।</p>";
+
+    return;
+  }
+
+
+  list.innerHTML="";
+
+
+  data.forEach(short=>{
+
+    const div =
+      document.createElement("div");
+
+
+    div.style.cssText = `
+      margin-top:15px;
+      padding:15px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      background:#fafafa;
+    `;
+
+
+    div.innerHTML = `
+
+      ${
+        short.thumbnail_url
+        ?
+        `<img
+          src="${escapeHtml(short.thumbnail_url)}"
+          style="
+            width:100%;
+            max-height:180px;
+            object-fit:cover;
+            border-radius:8px;
+          "
+        >`
+        :
+        ""
+      }
+
+
+      <h3>
+        ${escapeHtml(short.title)}
+      </h3>
+
+
+      <p>
+        <b>Category:</b>
+        ${escapeHtml(short.category)}
+      </p>
+
+
+      <button
+        onclick="editShort(${short.id})"
+      >
+        ✏️ Edit Short
+      </button>
+
+
+      <button
+        onclick="deleteShort(${short.id})"
+        style="background:#333"
+      >
+        🗑️ Delete Short
+      </button>
+
+    `;
+
+
+    list.appendChild(div);
+
+  });
+}
+
+
+/* =========================
+   EDIT SHORT
+========================= */
+
+async function editShort(id){
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("shorts")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+
+  if(error){
+
+    alert(
+      "❌ Short load failed: " +
+      error.message
+    );
+
+    return;
+  }
+
+
+  const newTitle =
+    prompt(
+      "Short का नया Title:",
+      data.title
+    );
+
+
+  if(newTitle===null) return;
+
+
+  const newCategory =
+    prompt(
+      "नई Category:",
+      data.category
+    );
+
+
+  if(newCategory===null) return;
+
+
+  const {
+    error:updateError
+  } =
+  await supabaseClient
+    .from("shorts")
+    .update({
+
+      title:newTitle.trim(),
+
+      category:newCategory.trim()
+
+    })
+    .eq("id",id);
+
+
+  if(updateError){
+
+    alert(
+      "❌ Edit failed: " +
+      updateError.message
+    );
+
+    return;
+  }
+
+
+  alert(
+    "✅ Short update हो गया!"
+  );
+
+
+  loadShorts();
+}
+
+
+/* =========================
+   DELETE SHORT
+========================= */
+
+async function deleteShort(id){
+
+  if(
+    !confirm(
+      "क्या आप यह Short Delete करना चाहते हैं?"
+    )
+  ){
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("shorts")
+    .select(
+      "video_path,thumbnail_path"
+    )
+    .eq("id",id)
+    .single();
+
+
+  if(error){
+
+    alert(
+      "❌ Short नहीं मिला: " +
+      error.message
+    );
+
+    return;
+  }
+
+
+  /* VIDEO DELETE */
+
+  if(data.video_path){
+
+    const {
+      error:videoError
+    } =
+    await supabaseClient.storage
+      .from("short-videos")
+      .remove([
+        data.video_path
+      ]);
+
+
+    if(videoError){
+
+      alert(
+        "❌ Video delete failed: " +
+        videoError.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* THUMBNAIL DELETE */
+
+  if(data.thumbnail_path){
+
+    const {
+      error:thumbnailError
+    } =
+    await supabaseClient.storage
+      .from("short-thumbnails")
+      .remove([
+        data.thumbnail_path
+      ]);
+
+
+    if(thumbnailError){
+
+      alert(
+        "❌ Thumbnail delete failed: " +
+        thumbnailError.message
+      );
+
+      return;
+    }
+  }
+
+
+  /* DATABASE DELETE */
+
+  const {
+    error:dbError
+  } =
+  await supabaseClient
+    .from("shorts")
+    .delete()
+    .eq("id",id);
+
+
+  if(dbError){
+
+    alert(
+      "❌ Database delete failed: " +
+      dbError.message
+    );
+
+    return;
+  }
+
+
+  alert(
+    "✅ Short पूरी तरह Delete हो गया!"
+  );
+
+
+  loadShorts();
+      }
 
 /* =========================
    ESCAPE HTML
