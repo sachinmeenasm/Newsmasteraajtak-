@@ -427,7 +427,7 @@ a{
 }
 @media(max-width:800px){
 
-  ...
+
 
 }
 
@@ -453,6 +453,105 @@ a{
   background:#222;
 }
 
+  /* =========================
+   NEWS SHORTS DESIGN
+========================= */
+
+.shorts-section{
+  margin:30px 0;
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 2px 10px #0001;
+}
+
+.shorts-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  border-left:6px solid #e31824;
+  padding-left:12px;
+}
+
+.shorts-heading h2{
+  font-size:28px;
+}
+
+.shorts-heading span{
+  color:#e31824;
+  font-weight:bold;
+}
+
+.shorts-row{
+  display:flex;
+  gap:15px;
+  overflow-x:auto;
+  padding-bottom:10px;
+}
+
+.short-card{
+  flex:0 0 180px;
+  color:#222;
+  text-decoration:none;
+}
+
+.short-video{
+  position:relative;
+  height:270px;
+  background:#222;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.short-video video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.short-video .play{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:50px;
+  height:50px;
+  background:#e31824;
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+
+.short-card h3{
+  margin-top:10px;
+  font-size:17px;
+  line-height:1.4;
+}
+
+@media(max-width:800px){
+
+  .shorts-section{
+    padding:15px;
+  }
+
+  .shorts-heading h2{
+    font-size:23px;
+  }
+
+  .short-card{
+    flex:0 0 165px;
+  }
+
+  .short-video{
+    height:250px;
+  }
+
+}
+  
 </style>
 </head>
 
@@ -632,6 +731,7 @@ a{
   </div>
 
 </section>
+
 <!-- =========================
      NEWS SHORTS
 ========================= -->
@@ -646,99 +746,19 @@ a{
 
   </div>
 
+  <div
+    class="shorts-row"
+    id="homeShorts"
+  >
 
-  <div class="shorts-row">
-
-
-    <a href="shorts.html" class="short-card">
-
-      <div class="short-video">
-
-        <span>▶</span>
-
-        <small>00:30</small>
-
-      </div>
-
-      <h3>
-        आज की बड़ी खबर सिर्फ 30 सेकंड में
-      </h3>
-
-    </a>
-
-
-    <a href="shorts.html" class="short-card">
-
-      <div class="short-video">
-
-        <span>▶</span>
-
-        <small>00:45</small>
-
-      </div>
-
-      <h3>
-        देश-दुनिया की बड़ी अपडेट
-      </h3>
-
-    </a>
-
-
-    <a href="shorts.html" class="short-card">
-
-      <div class="short-video">
-
-        <span>▶</span>
-
-        <small>00:35</small>
-
-      </div>
-
-      <h3>
-        आज की ताजा खबर
-      </h3>
-
-    </a>
-
-
-    <a href="shorts.html" class="short-card">
-
-      <div class="short-video">
-
-        <span>▶</span>
-
-        <small>00:50</small>
-
-      </div>
-
-      <h3>
-        स्पोर्ट्स की बड़ी खबर
-      </h3>
-
-    </a>
-
-
-    <a href="shorts.html" class="short-card">
-
-      <div class="short-video">
-
-        <span>▶</span>
-
-        <small>00:40</small>
-
-      </div>
-
-      <h3>
-        टेक्नोलॉजी की नई अपडेट
-      </h3>
-
-    </a>
-
+    <div class="short-loading">
+      🎬 Shorts लोड हो रहे हैं...
+    </div>
 
   </div>
 
 </section>
-
+  
 <!-- =========================
      ALL NEWS
 ========================= -->
