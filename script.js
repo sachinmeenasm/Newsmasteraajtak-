@@ -23,7 +23,7 @@ async function uploadNewsPhoto() {
 
   const { error } = await supabaseClient
     .storage
-    .from("News image")
+    .from("news-images")
     .upload(fileName, file);
 
   if (error) {
@@ -34,7 +34,7 @@ async function uploadNewsPhoto() {
 
   const { data } = supabaseClient
     .storage
-    .from("News image")
+    .from("news-images")
     .getPublicUrl(fileName);
 
   preview.src = data.publicUrl;
