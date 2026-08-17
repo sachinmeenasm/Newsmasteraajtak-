@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEWSMASTER Admin Panel</title>
+
+<title>NEWSMASTER Admin</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -18,7 +21,7 @@ body{
 .header{
   background:#111;
   color:white;
-  padding:20px;
+  padding:18px;
   text-align:center;
 }
 
@@ -28,7 +31,7 @@ body{
 
 .panel{
   max-width:700px;
-  margin:30px auto;
+  margin:25px auto;
   padding:25px;
   background:white;
   border-radius:15px;
@@ -48,7 +51,9 @@ label{
   font-weight:bold;
 }
 
-input,textarea,select{
+input,
+textarea,
+select{
   width:100%;
   padding:13px;
   border:1px solid #ddd;
@@ -63,18 +68,26 @@ textarea{
 
 button{
   width:100%;
-  margin-top:20px;
+  margin-top:18px;
   padding:14px;
   border:0;
   border-radius:8px;
   background:#e31824;
   color:white;
-  font-size:18px;
+  font-size:17px;
   font-weight:bold;
 }
 
-button:active{
-  transform:scale(.98);
+button.logout{
+  background:#333;
+}
+
+#loginPanel{
+  max-width:500px;
+}
+
+#adminPanel{
+  display:none;
 }
 
 #preview{
@@ -86,10 +99,19 @@ button:active{
   border-radius:10px;
 }
 
-#status{
+#status,
+#loginStatus{
   margin-top:15px;
   font-weight:bold;
   text-align:center;
+}
+
+.success{
+  color:green;
+}
+
+.error{
+  color:#e31824;
 }
 </style>
 </head>
@@ -98,21 +120,59 @@ button:active{
 
 <header class="header">
   <h1><b>NEWS</b>MASTER</h1>
-  <p>Admin News Panel</p>
+  <p>Admin Panel 🔐</p>
 </header>
 
-<div class="panel">
+
+<!-- LOGIN -->
+
+<div class="panel" id="loginPanel">
+
+  <h2>🔐 Admin Login</h2>
+
+  <label>Email</label>
+
+  <input
+    type="email"
+    id="loginEmail"
+    placeholder="Admin Email">
+
+
+  <label>Password</label>
+
+  <input
+    type="password"
+    id="loginPassword"
+    placeholder="Admin Password">
+
+
+  <button onclick="loginAdmin()">
+    🔐 Login
+  </button>
+
+  <p id="loginStatus"></p>
+
+</div>
+
+
+<!-- ADMIN PANEL -->
+
+<div class="panel" id="adminPanel">
 
   <h2>📰 नई खबर जोड़ें</h2>
 
   <label>खबर की Headline</label>
+
   <input
     type="text"
     id="title"
     placeholder="खबर की headline लिखें">
 
+
   <label>Category</label>
+
   <select id="category">
+
     <option value="भारत">भारत</option>
     <option value="दुनिया">दुनिया</option>
     <option value="राजनीति">राजनीति</option>
@@ -120,28 +180,47 @@ button:active{
     <option value="टेक्नोलॉजी">टेक्नोलॉजी</option>
     <option value="स्पोर्ट्स">स्पोर्ट्स</option>
     <option value="मनोरंजन">मनोरंजन</option>
+
   </select>
 
+
   <label>खबर की पूरी जानकारी</label>
+
   <textarea
     id="description"
-    placeholder="खबर की पूरी जानकारी लिखें"></textarea>
+    placeholder="खबर की पूरी जानकारी लिखें">
+  </textarea>
+
 
   <label>News Photo</label>
+
   <input
     type="file"
     id="newsPhoto"
     accept="image/*">
 
-  <img id="preview" alt="Photo Preview">
+
+  <img
+    id="preview"
+    alt="Photo Preview">
+
 
   <button onclick="uploadNews()">
     📤 खबर Publish करें
   </button>
 
+
   <p id="status"></p>
 
+
+  <button
+    class="logout"
+    onclick="logoutAdmin()">
+    🚪 Logout
+  </button>
+
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -150,12 +229,15 @@ button:active{
 const SUPABASE_URL =
 "https://zdupxbndazidvwrfvrhd.supabase.co";
 
+
 /*
-  यहाँ अपनी Publishable Key डालें।
-  Secret Key यहाँ बिल्कुल न डालें।
+  यहाँ आपकी Publishable Key रहेगी।
+  Secret / Service Role key बिल्कुल नहीं डालनी।
 */
+
 const SUPABASE_KEY =
 "sb_publishable_NSWujieJHbKrNORTwJa9oQ_HJvaqZdq";
+
 
 const supabaseClient =
 supabase.createClient(
@@ -163,102 +245,356 @@ supabase.createClient(
   SUPABASE_KEY
 );
 
+
+
+/* =========================
+   CHECK LOGIN
+========================= */
+
+async function checkLogin(){
+
+  const {
+    data:{
+      session
+    }
+  } =
+  await supabaseClient.auth.getSession();
+
+
+  if(session){
+
+    showAdmin();
+
+  }else{
+
+    showLogin();
+
+  }
+
+}
+
+
+
+/* =========================
+   SHOW LOGIN
+========================= */
+
+function showLogin(){
+
+  document.getElementById("loginPanel")
+    .style.display="block";
+
+  document.getElementById("adminPanel")
+    .style.display="none";
+
+}
+
+
+
+/* =========================
+   SHOW ADMIN
+========================= */
+
+function showAdmin(){
+
+  document.getElementById("loginPanel")
+    .style.display="none";
+
+  document.getElementById("adminPanel")
+    .style.display="block";
+
+}
+
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function loginAdmin(){
+
+  const email =
+    document.getElementById("loginEmail")
+    .value.trim();
+
+  const password =
+    document.getElementById("loginPassword")
+    .value;
+
+  const status =
+    document.getElementById("loginStatus");
+
+
+  if(!email || !password){
+
+    status.innerText =
+      "⚠️ Email और Password डालें।";
+
+    status.className="error";
+
+    return;
+
+  }
+
+
+  status.innerText =
+    "⏳ Login हो रहा है...";
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.auth
+  .signInWithPassword({
+
+    email:email,
+    password:password
+
+  });
+
+
+  if(error){
+
+    status.innerText =
+      "❌ Login failed: "
+      + error.message;
+
+    status.className="error";
+
+    return;
+
+  }
+
+
+  status.innerText =
+    "✅ Login successful!";
+
+  status.className="success";
+
+
+  showAdmin();
+
+}
+
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logoutAdmin(){
+
+  await supabaseClient.auth.signOut();
+
+  showLogin();
+
+}
+
+
+
+/* =========================
+   PHOTO PREVIEW
+========================= */
+
 const photoInput =
 document.getElementById("newsPhoto");
 
 const preview =
 document.getElementById("preview");
 
-photoInput.addEventListener("change",function(){
 
-  const file=this.files[0];
+photoInput.addEventListener(
+  "change",
+  function(){
 
-  if(file){
-    preview.src=URL.createObjectURL(file);
-    preview.style.display="block";
+    const file =
+      this.files[0];
+
+    if(file){
+
+      preview.src =
+        URL.createObjectURL(file);
+
+      preview.style.display =
+        "block";
+
+    }
+
   }
+);
 
-});
+
+
+/* =========================
+   UPLOAD NEWS
+========================= */
 
 async function uploadNews(){
 
+  const {
+    data:{
+      session
+    }
+  } =
+  await supabaseClient.auth
+  .getSession();
+
+
+  if(!session){
+
+    alert(
+      "पहले Admin Login करें।"
+    );
+
+    showLogin();
+
+    return;
+
+  }
+
+
   const title =
-    document.getElementById("title").value.trim();
+    document.getElementById("title")
+    .value.trim();
+
 
   const category =
-    document.getElementById("category").value;
+    document.getElementById("category")
+    .value;
+
 
   const description =
-    document.getElementById("description").value.trim();
+    document.getElementById("description")
+    .value.trim();
+
 
   const file =
-    document.getElementById("newsPhoto").files[0];
+    document.getElementById("newsPhoto")
+    .files[0];
+
 
   const status =
     document.getElementById("status");
 
-  if(!title || !description || !file){
+
+  if(
+    !title ||
+    !description ||
+    !file
+  ){
 
     status.innerText =
       "⚠️ Headline, जानकारी और Photo जरूरी है।";
 
     return;
+
   }
 
-  status.innerText="⏳ Upload हो रहा है...";
+
+  status.innerText =
+    "⏳ Photo upload हो रही है...";
+
 
   const fileName =
-    Date.now()+"-"+file.name.replace(/\s+/g,"-");
+    Date.now()
+    + "-"
+    + file.name
+        .replace(/\s+/g,"-");
 
-  const {data,error} =
-    await supabaseClient.storage
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient.storage
     .from("news-images")
-    .upload(fileName,file);
+    .upload(
+      fileName,
+      file
+    );
+
 
   if(error){
 
     status.innerText =
-      "❌ Photo upload failed: "+error.message;
+      "❌ Photo upload failed: "
+      + error.message;
 
     return;
+
   }
 
-  const {data:urlData} =
-    supabaseClient.storage
+
+  const {
+    data:urlData
+  } =
+  supabaseClient.storage
     .from("news-images")
-    .getPublicUrl(fileName);
+    .getPublicUrl(
+      fileName
+    );
+
 
   const imageUrl =
     urlData.publicUrl;
 
+
   status.innerText =
-    "✅ Photo upload हो गया।";
-const { error: newsError } =
+    "⏳ News save हो रही है...";
+
+
+  const {
+    error:newsError
+  } =
   await supabaseClient
-  .from("news")
-  .insert({
-    title: title,
-    category: category,
-    description: description,
-    image_url: imageUrl
-  });
+    .from("news")
+    .insert({
 
-if (newsError) {
+      title:title,
+
+      category:category,
+
+      description:description,
+
+      image_url:imageUrl
+
+    });
+
+
+  if(newsError){
+
+    status.innerText =
+      "❌ News save failed: "
+      + newsError.message;
+
+    return;
+
+  }
+
+
   status.innerText =
-    "❌ News save failed: " + newsError.message;
-  return;
+    "✅ News successfully published!";
+
+
+  document.getElementById("title")
+    .value="";
+
+  document.getElementById("description")
+    .value="";
+
+  document.getElementById("newsPhoto")
+    .value="";
+
+  preview.style.display="none";
+
 }
 
-status.innerText =
-  "✅ News successfully published!";
-  console.log({
-    title,
-    category,
-    description,
-    imageUrl
-  });
 
-}
+
+/* START */
+
+checkLogin();
 
 </script>
 
