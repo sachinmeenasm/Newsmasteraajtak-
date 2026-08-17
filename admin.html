@@ -209,7 +209,15 @@ button.logout{
     📤 खबर Publish करें
   </button>
 
+<hr style="margin:35px 0">
 
+<h2>📋 सभी खबरें Manage करें</h2>
+
+<button onclick="loadNews()">
+  🔄 News List Refresh करें
+</button>
+
+<div id="newsList"></div>
   <p id="status"></p>
 
 
@@ -595,7 +603,176 @@ async function uploadNews(){
 /* START */
 
 checkLogin();
+async function loadNews() {
 
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
+
+  if (!session) {
+    alert("पहले Admin Login करें।");
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("news")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const list = document.getElementById("newsList");
+
+  if (error) {
+    list.innerHTML =
+      "<p>❌ News load failed: " + error.message + "</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = "<p>अभी कोई खबर नहीं है।</p>";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  data.forEach(news => {
+
+    const div = document.createElement("div");
+
+    div.style.cssText = `
+      margin-top:15px;
+      padding:15px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      background:#fafafa;
+    `;
+
+    div.innerHTML = `
+      ${
+        news.image_url
+        ? `<img src="${news.image_url}"
+             style="width:100%;max-height:180px;
+             object-fit:cover;border-radius:8px;">`
+        : ""
+      }
+
+      <h3>${escapeHtml(news.title)}</h3>
+
+      <p><b>Category:</b>
+        ${escapeHtml(news.category)}
+      </p>
+
+      <button onclick="editNews(${news.id})">
+        ✏️ Edit
+      </button>
+
+      <button
+        onclick="deleteNews(${news.id})"
+        style="background:#333">
+        🗑️ Delete
+      </button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+
+async function editNews(id) {
+
+  const { data: news, error } =
+    await supabaseClient
+      .from("news")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+  if (error) {
+    alert("❌ News नहीं मिली");
+    return;
+  }
+
+  const title = prompt(
+    "नई Headline लिखें:",
+    news.title
+  );
+
+  if (title === null) return;
+
+  const description = prompt(
+    "पूरी जानकारी बदलें:",
+    news.description
+  );
+
+  if (description === null) return;
+
+  const category = prompt(
+    "Category बदलें:",
+    news.category
+  );
+
+  if (category === null) return;
+
+  const { error: updateError } =
+    await supabaseClient
+      .from("news")
+      .update({
+        title: title.trim(),
+        description: description.trim(),
+        category: category.trim()
+      })
+      .eq("id", id);
+
+  if (updateError) {
+    alert(
+      "❌ Update failed: " +
+      updateError.message
+    );
+    return;
+  }
+
+  alert("✅ News Update हो गई!");
+
+  loadNews();
+}
+
+
+async function deleteNews(id) {
+
+  if (!confirm(
+    "⚠️ क्या आप यह खबर Delete करना चाहते हैं?"
+  )) {
+    return;
+  }
+
+  const { error } =
+    await supabaseClient
+      .from("news")
+      .delete()
+      .eq("id", id);
+
+  if (error) {
+    alert(
+      "❌ Delete failed: " +
+      error.message
+    );
+    return;
+  }
+
+  alert("🗑️ News Delete हो गई!");
+
+  loadNews();
+}
+
+
+function escapeHtml(text) {
+
+  return String(text || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+        }
 </script>
 
 </body>
