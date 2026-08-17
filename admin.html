@@ -229,7 +229,6 @@ button.logout{
 
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -237,22 +236,14 @@ button.logout{
 const SUPABASE_URL =
 "https://zdupxbndazidvwrfvrhd.supabase.co";
 
-
-/*
-  यहाँ आपकी Publishable Key रहेगी।
-  Secret / Service Role key बिल्कुल नहीं डालनी।
-*/
-
 const SUPABASE_KEY =
 "sb_publishable_NSWujieJHbKrNORTwJa9oQ_HJvaqZdq";
-
 
 const supabaseClient =
 supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
-
 
 
 /* =========================
@@ -262,16 +253,15 @@ supabase.createClient(
 async function checkLogin(){
 
   const {
-    data:{
-      session
-    }
+    data:{ session }
   } =
   await supabaseClient.auth.getSession();
-
 
   if(session){
 
     showAdmin();
+
+    loadNews();
 
   }else{
 
@@ -280,7 +270,6 @@ async function checkLogin(){
   }
 
 }
-
 
 
 /* =========================
@@ -298,7 +287,6 @@ function showLogin(){
 }
 
 
-
 /* =========================
    SHOW ADMIN
 ========================= */
@@ -312,7 +300,6 @@ function showAdmin(){
     .style.display="block";
 
 }
-
 
 
 /* =========================
@@ -350,23 +337,22 @@ async function loginAdmin(){
 
 
   const {
-    data,
     error
   } =
   await supabaseClient.auth
-  .signInWithPassword({
+    .signInWithPassword({
 
-    email:email,
-    password:password
+      email:email,
+      password:password
 
-  });
+    });
 
 
   if(error){
 
     status.innerText =
-      "❌ Login failed: "
-      + error.message;
+      "❌ Login failed: " +
+      error.message;
 
     status.className="error";
 
@@ -383,8 +369,9 @@ async function loginAdmin(){
 
   showAdmin();
 
-}
+  loadNews();
 
+}
 
 
 /* =========================
@@ -398,7 +385,6 @@ async function logoutAdmin(){
   showLogin();
 
 }
-
 
 
 /* =========================
@@ -433,7 +419,6 @@ photoInput.addEventListener(
 );
 
 
-
 /* =========================
    UPLOAD NEWS
 ========================= */
@@ -441,12 +426,10 @@ photoInput.addEventListener(
 async function uploadNews(){
 
   const {
-    data:{
-      session
-    }
+    data:{ session }
   } =
   await supabaseClient.auth
-  .getSession();
+    .getSession();
 
 
   if(!session){
@@ -464,22 +447,22 @@ async function uploadNews(){
 
   const title =
     document.getElementById("title")
-    .value.trim();
+      .value.trim();
 
 
   const category =
     document.getElementById("category")
-    .value;
+      .value;
 
 
   const description =
     document.getElementById("description")
-    .value.trim();
+      .value.trim();
 
 
   const file =
     document.getElementById("newsPhoto")
-    .files[0];
+      .files[0];
 
 
   const status =
@@ -495,6 +478,8 @@ async function uploadNews(){
     status.innerText =
       "⚠️ Headline, जानकारी और Photo जरूरी है।";
 
+    status.className="error";
+
     return;
 
   }
@@ -505,15 +490,13 @@ async function uploadNews(){
 
 
   const fileName =
-    Date.now()
-    + "-"
-    + file.name
-        .replace(/\s+/g,"-");
+    Date.now() +
+    "-" +
+    file.name.replace(/\s+/g,"-");
 
 
   const {
-    data,
-    error
+    error:uploadError
   } =
   await supabaseClient.storage
     .from("news-images")
@@ -523,11 +506,13 @@ async function uploadNews(){
     );
 
 
-  if(error){
+  if(uploadError){
 
     status.innerText =
-      "❌ Photo upload failed: "
-      + error.message;
+      "❌ Photo upload failed: " +
+      uploadError.message;
+
+    status.className="error";
 
     return;
 
@@ -565,7 +550,9 @@ async function uploadNews(){
 
       description:description,
 
-      image_url:imageUrl
+      image_url:imageUrl,
+
+      is_top_news:false
 
     });
 
@@ -573,8 +560,10 @@ async function uploadNews(){
   if(newsError){
 
     status.innerText =
-      "❌ News save failed: "
-      + newsError.message;
+      "❌ News save failed: " +
+      newsError.message;
+
+    status.className="error";
 
     return;
 
@@ -583,6 +572,8 @@ async function uploadNews(){
 
   status.innerText =
     "✅ News successfully published!";
+
+  status.className="success";
 
 
   document.getElementById("title")
@@ -596,47 +587,85 @@ async function uploadNews(){
 
   preview.style.display="none";
 
+
+  loadNews();
+
 }
 
 
+/* =========================
+   LOAD NEWS
+========================= */
 
-/* START */
-
-checkLogin();
-async function loadNews() {
+async function loadNews(){
 
   const {
-    data: { session }
-  } = await supabaseClient.auth.getSession();
+    data:{ session }
+  } =
+  await supabaseClient.auth
+    .getSession();
 
-  if (!session) {
-    alert("पहले Admin Login करें।");
+
+  if(!session){
+
+    alert(
+      "पहले Admin Login करें।"
+    );
+
     return;
+
   }
 
-  const { data, error } = await supabaseClient
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
     .from("news")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
 
-  const list = document.getElementById("newsList");
 
-  if (error) {
+  const list =
+    document.getElementById("newsList");
+
+
+  if(error){
+
     list.innerHTML =
-      "<p>❌ News load failed: " + escapeHtml(error.message) + "</p>";
+      "<p class='error'>❌ News load failed: " +
+      escapeHtml(error.message) +
+      "</p>";
+
     return;
+
   }
 
-  if (!data || data.length === 0) {
-    list.innerHTML = "<p>अभी कोई खबर नहीं है।</p>";
+
+  if(!data || data.length === 0){
+
+    list.innerHTML =
+      "<p>अभी कोई खबर नहीं है।</p>";
+
     return;
+
   }
 
-  list.innerHTML = "";
+
+  list.innerHTML="";
+
 
   data.forEach(news => {
 
-    const div = document.createElement("div");
+    const div =
+      document.createElement("div");
+
 
     div.style.cssText = `
       margin-top:15px;
@@ -646,56 +675,127 @@ async function loadNews() {
       background:#fafafa;
     `;
 
+
     div.innerHTML = `
+
       ${
         news.image_url
-        ? `<img src="${news.image_url}"
-             style="width:100%;max-height:180px;
-             object-fit:cover;border-radius:8px;">`
-        : ""
+        ?
+        `<img
+          src="${escapeHtml(news.image_url)}"
+          style="
+            width:100%;
+            max-height:180px;
+            object-fit:cover;
+            border-radius:8px;
+          "
+        >`
+        :
+        ""
       }
 
-      <h3>${escapeHtml(news.title)}</h3>
+
+      <h3>
+        ${escapeHtml(news.title)}
+      </h3>
+
 
       <p>
         <b>Category:</b>
         ${escapeHtml(news.category)}
       </p>
 
+
       <p>
         <b>TOP NEWS:</b>
-        ${news.is_top_news ? "⭐ हाँ" : "❌ नहीं"}
-      </p>
-
-      <button
-        onclick="toggleTopNews(${news.id}, ${!news.is_top_news})"
-        style="background:${news.is_top_news ? "#333" : "#e31824"}">
         ${
           news.is_top_news
-          ? "❌ TOP NEWS से हटाएँ"
-          : "⭐ TOP NEWS में डालें"
+          ? "⭐ हाँ"
+          : "❌ नहीं"
         }
+      </p>
+
+
+      <button
+        onclick="
+          toggleTopNews(
+            ${news.id},
+            ${!news.is_top_news}
+          )
+        "
+        style="
+          background:
+          ${news.is_top_news
+            ? "#333"
+            : "#e31824"}
+        "
+      >
+
+        ${
+          news.is_top_news
+          ?
+          "❌ TOP NEWS से हटाएँ"
+          :
+          "⭐ TOP NEWS में डालें"
+        }
+
       </button>
 
-      <button onclick="editNews(${news.id})">
+
+      <button
+        onclick="
+          editNews(${news.id})
+        "
+      >
         ✏️ Edit
       </button>
 
+
       <button
-        onclick="deleteNews(${news.id})"
-        style="background:#333">
+        onclick="
+          deleteNews(${news.id})
+        "
+        style="background:#333"
+      >
         🗑️ Delete
       </button>
-    async function toggleTopNews(id, status) {
 
-  const { error } = await supabaseClient
+    `;
+
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================
+   TOP NEWS
+========================= */
+
+async function toggleTopNews(
+  id,
+  status
+){
+
+  const {
+    error
+  } =
+  await supabaseClient
     .from("news")
     .update({
-      is_top_news: status
-    })
-    .eq("id", id);
 
-  if (error) {
+      is_top_news:status
+
+    })
+    .eq(
+      "id",
+      id
+    );
+
+
+  if(error){
 
     alert(
       "❌ TOP NEWS update failed: " +
@@ -703,32 +803,218 @@ async function loadNews() {
     );
 
     return;
+
   }
+
 
   alert(
     status
-      ? "⭐ खबर TOP NEWS में जोड़ दी गई!"
-      : "❌ खबर TOP NEWS से हटा दी गई!"
+    ?
+    "⭐ खबर TOP NEWS में जोड़ दी गई!"
+    :
+    "❌ खबर TOP NEWS से हटा दी गई!"
   );
 
+
   loadNews();
-}
 
-    list.appendChild(div);
-  });
 }
 
 
-function escapeHtml(text) {
+/* =========================
+   DELETE NEWS
+========================= */
+
+async function deleteNews(id){
+
+  const confirmDelete =
+    confirm(
+      "क्या आप यह खबर Delete करना चाहते हैं?"
+    );
+
+
+  if(!confirmDelete){
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+  await supabaseClient
+    .from("news")
+    .delete()
+    .eq(
+      "id",
+      id
+    );
+
+
+  if(error){
+
+    alert(
+      "❌ Delete failed: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    "✅ खबर Delete हो गई!"
+  );
+
+
+  loadNews();
+
+}
+
+
+/* =========================
+   EDIT NEWS
+========================= */
+
+async function editNews(id){
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("news")
+    .select("*")
+    .eq("id",id)
+    .single();
+
+
+  if(error){
+
+    alert(
+      "❌ News load failed: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  const newTitle =
+    prompt(
+      "नई Headline लिखें:",
+      data.title
+    );
+
+
+  if(newTitle === null){
+
+    return;
+
+  }
+
+
+  const newDescription =
+    prompt(
+      "नई जानकारी लिखें:",
+      data.description
+    );
+
+
+  if(newDescription === null){
+
+    return;
+
+  }
+
+
+  const {
+    error:updateError
+  } =
+  await supabaseClient
+    .from("news")
+    .update({
+
+      title:newTitle.trim(),
+
+      description:
+        newDescription.trim()
+
+    })
+    .eq(
+      "id",
+      id
+    );
+
+
+  if(updateError){
+
+    alert(
+      "❌ Edit failed: " +
+      updateError.message
+    );
+
+    return;
+
+  }
+
+
+  alert(
+    "✅ News update हो गई!"
+  );
+
+
+  loadNews();
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(text){
 
   return String(text || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-        }
-</script>
 
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+checkLogin();
+
+  </script>
+              
 </body>
 </html>
