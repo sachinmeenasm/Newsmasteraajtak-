@@ -233,7 +233,24 @@ async function uploadNews(){
 
   status.innerText =
     "✅ Photo upload हो गया।";
+const { error: newsError } =
+  await supabaseClient
+  .from("news")
+  .insert({
+    title: title,
+    category: category,
+    description: description,
+    image_url: imageUrl
+  });
 
+if (newsError) {
+  status.innerText =
+    "❌ News save failed: " + newsError.message;
+  return;
+}
+
+status.innerText =
+  "✅ News successfully published!";
   console.log({
     title,
     category,
