@@ -1031,14 +1031,18 @@ async function editNews(id){
 
 }
 
-  /* =========================
+/* =========================
    UPLOAD SHORT
 ========================= */
 
 async function uploadShort(){
 
+  /* =========================
+     CHECK LOGIN
+  ========================= */
+
   const {
-    data:{ session }
+    data: { session }
   } = await supabaseClient.auth.getSession();
 
   if(!session){
@@ -1051,201 +1055,381 @@ async function uploadShort(){
   }
 
 
+  /* =========================
+     GET FORM DATA
+  ========================= */
+
   const title =
     document.getElementById("shortTitle")
-    .value.trim();
-
+      .value.trim();
 
   const category =
     document.getElementById("shortCategory")
-    .value;
-
+      .value;
 
   const videoFile =
     document.getElementById("shortVideo")
-    .files[0];
-
+      .files[0];
 
   const thumbnailFile =
     document.getElementById("shortThumbnail")
-    .files[0];
-
+      .files[0];
 
   const status =
     document.getElementById("shortStatus");
 
 
-  if(!title || !videoFile){
+  /* =========================
+     VALIDATION
+  ========================= */
+
+  if(!title){
 
     status.innerText =
-      "⚠️ Title और Video जरूरी है।";
+      "⚠️ Short का Title डालें।";
 
-    status.className="error";
+    status.className = "error";
 
     return;
   }
 
 
-  status.innerText =
-    "⏳ Video upload हो रहा है...";
+  if(!videoFile){
+
+    status.innerText =
+      "⚠️ Short Video चुनें।";
+
+    status.className = "error";
+
+    return;
+  }
+
+
+  if(!thumbnailFile){
+
+    status.innerText =
+      "⚠️ Short Thumbnail चुनें।";
+
+    status.className = "error";
+
+    return;
+  }
+
+
+  /* =========================
+     VIDEO TYPE CHECK
+  ========================= */
+
+  if(!videoFile.type.startsWith("video/")){
+
+    status.innerText =
+      "❌ केवल Video file upload करें।";
+
+    status.className = "error";
+
+    return;
+  }
+
+
+  /* =========================
+     THUMBNAIL TYPE CHECK
+  ========================= */
+
+  if(!thumbnailFile.type.startsWith("image/")){
+
+    status.innerText =
+      "❌ केवल Image Thumbnail upload करें।";
+
+    status.className = "error";
+
+    return;
+  }
+
+
+  /* =========================
+     SAFE FILE NAMES
+  ========================= */
+
+  const videoExtension =
+    videoFile.name
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+  const thumbnailExtension =
+    thumbnailFile.name
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+
+  const uniqueId =
+    Date.now() + "-" +
+    Math.random()
+      .toString(36)
+      .substring(2,8);
 
 
   const videoPath =
-    Date.now() +
-    "-" +
-    videoFile.name.replace(/\s+/g,"-");
+    uniqueId +
+    "-video." +
+    videoExtension;
+
+
+  const thumbnailPath =
+    uniqueId +
+    "-thumbnail." +
+    thumbnailExtension;
+
+
+  /* =========================
+     VIDEO UPLOAD
+     BUCKET = short videos
+  ========================= */
+
+  status.innerText =
+    "⏳ Video upload हो रहा है...";
+
+  status.className = "";
 
 
   const {
-    error:videoError
+    error: videoError
   } =
   await supabaseClient.storage
+
     .from("short-videos")
+
     .upload(
       videoPath,
-      videoFile
+      videoFile,
+      {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: videoFile.type
+      }
     );
 
 
   if(videoError){
 
+    console.error(
+      "VIDEO UPLOAD ERROR:",
+      videoError
+    );
+
     status.innerText =
       "❌ Video upload failed: " +
       videoError.message;
 
-    status.className="error";
+    status.className = "error";
 
     return;
   }
 
 
+  /* =========================
+     GET VIDEO URL
+  ========================= */
+
   const {
-    data:videoData
+    data: videoData
   } =
   supabaseClient.storage
+
     .from("short-videos")
-    .getPublicUrl(videoPath);
+
+    .getPublicUrl(
+      videoPath
+    );
 
 
   const videoUrl =
     videoData.publicUrl;
 
 
-  let thumbnailUrl = null;
-  let thumbnailPath = null;
-
-
-  /* THUMBNAIL */
-
-  if(thumbnailFile){
-
-    status.innerText =
-      "⏳ Thumbnail upload हो रहा है...";
-
-
-    thumbnailPath =
-      Date.now() +
-      "-" +
-      thumbnailFile.name.replace(/\s+/g,"-");
-
-
-    const {
-      error:thumbnailError
-    } =
-    await supabaseClient.storage
-      .from("short-thumbnails")
-      .upload(
-        thumbnailPath,
-        thumbnailFile
-      );
-
-
-    if(thumbnailError){
-
-      status.innerText =
-        "❌ Thumbnail upload failed: " +
-        thumbnailError.message;
-
-      status.className="error";
-
-      return;
-    }
-
-
-    const {
-      data:thumbnailData
-    } =
-    supabaseClient.storage
-      .from("short-thumbnails")
-      .getPublicUrl(
-        thumbnailPath
-      );
-
-
-    thumbnailUrl =
-      thumbnailData.publicUrl;
-  }
-
-
-  /* DATABASE */
+  /* =========================
+     THUMBNAIL UPLOAD
+     BUCKET = short thumbnails
+  ========================= */
 
   status.innerText =
-    "⏳ Short save हो रहा है...";
+    "⏳ Thumbnail upload हो रहा है...";
 
 
   const {
-    error:saveError
+    error: thumbnailError
   } =
-  await supabaseClient
-    .from("shorts-videos")
-    .insert({
+  await supabaseClient.storage
 
-      title:title,
+    .from("short-thumbnails")
 
-      category:category,
-
-      video_url:videoUrl,
-
-      thumbnail_url:thumbnailUrl,
-
-      video_path:videoPath,
-
-      thumbnail_path:thumbnailPath
-
-    });
+    .upload(
+      thumbnailPath,
+      thumbnailFile,
+      {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: thumbnailFile.type
+      }
+    );
 
 
-  if(saveError){
+  if(thumbnailError){
+
+    console.error(
+      "THUMBNAIL UPLOAD ERROR:",
+      thumbnailError
+    );
+
+
+    /* Video को भी हटाने की कोशिश */
+
+    await supabaseClient.storage
+
+      .from("short-videos")
+
+      .remove([
+        videoPath
+      ]);
+
 
     status.innerText =
-      "❌ Short save failed: " +
-      saveError.message;
+      "❌ Thumbnail upload failed: " +
+      thumbnailError.message;
 
-    status.className="error";
+    status.className = "error";
 
     return;
   }
 
 
+  /* =========================
+     GET THUMBNAIL URL
+  ========================= */
+
+  const {
+    data: thumbnailData
+  } =
+  supabaseClient.storage
+
+    .from("short-thumbnails")
+
+    .getPublicUrl(
+      thumbnailPath
+    );
+
+
+  const thumbnailUrl =
+    thumbnailData.publicUrl;
+
+
+  /* =========================
+     SAVE SHORT IN DATABASE
+     TABLE = shorts
+  ========================= */
+
+  status.innerText =
+    "⏳ Short database में save हो रहा है...";
+
+
+  const {
+    error: saveError
+  } =
+  await supabaseClient
+
+    .from("shorts")
+
+    .insert({
+
+      title: title,
+
+      video_url: videoUrl,
+
+      thumbnail_url: thumbnailUrl,
+
+      is_published: true
+
+    });
+
+
+  /* =========================
+     DATABASE ERROR
+  ========================= */
+
+  if(saveError){
+
+    console.error(
+      "SHORT DATABASE ERROR:",
+      saveError
+    );
+
+
+    /* Uploaded files delete करें */
+
+    await supabaseClient.storage
+
+      .from("short-videos")
+
+      .remove([
+        videoPath
+      ]);
+
+
+    await supabaseClient.storage
+
+      .from("short-thumbnails")
+
+      .remove([
+        thumbnailPath
+      ]);
+
+
+    status.innerText =
+      "❌ Short save failed: " +
+      saveError.message;
+
+    status.className = "error";
+
+    return;
+  }
+
+
+  /* =========================
+     SUCCESS
+  ========================= */
+
   status.innerText =
     "✅ Short successfully uploaded!";
 
-  status.className="success";
+  status.className = "success";
 
 
-  document.getElementById("shortTitle")
-    .value="";
+  /* =========================
+     FORM RESET
+  ========================= */
+
+  document.getElementById(
+    "shortTitle"
+  ).value = "";
 
 
-  document.getElementById("shortVideo")
-    .value="";
+  document.getElementById(
+    "shortVideo"
+  ).value = "";
 
 
-  document.getElementById("shortThumbnail")
-    .value="";
+  document.getElementById(
+    "shortThumbnail"
+  ).value = "";
 
+
+  /* =========================
+     REFRESH SHORT LIST
+  ========================= */
 
   loadShorts();
+
 }
 
 
