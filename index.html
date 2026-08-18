@@ -410,51 +410,7 @@ a{
 
 
 /* =========================
-   LOADING
-========================= */
-
-.loading{
-  text-align:center;
-  padding:30px;
-  font-size:18px;
-}
-
-.no-news{
-  background:#fff;
-  padding:25px;
-  border-radius:12px;
-  text-align:center;
-}
-@media(max-width:800px){
-
-
-
-}
-
-.shorts-section{
-  margin:30px 0;
-  background:#fff;
-  padding:18px;
-  border-radius:14px;
-}
-
-.shorts-row{
-  display:flex;
-  gap:15px;
-  overflow-x:auto;
-}
-
-.short-card{
-  flex:0 0 180px;
-}
-
-.short-video{
-  height:250px;
-  background:#222;
-}
-
-  /* =========================
-   NEWS SHORTS DESIGN
+   NEWS SHORTS
 ========================= */
 
 .shorts-section{
@@ -487,7 +443,17 @@ a{
   display:flex;
   gap:15px;
   overflow-x:auto;
-  padding-bottom:10px;
+  padding-bottom:12px;
+  scroll-behavior:smooth;
+}
+
+.shorts-row::-webkit-scrollbar{
+  height:6px;
+}
+
+.shorts-row::-webkit-scrollbar-thumb{
+  background:#e31824;
+  border-radius:10px;
 }
 
 .short-card{
@@ -498,8 +464,9 @@ a{
 
 .short-video{
   position:relative;
+  width:100%;
   height:270px;
-  background:#222;
+  background:#111;
   border-radius:12px;
   overflow:hidden;
 }
@@ -508,6 +475,7 @@ a{
   width:100%;
   height:100%;
   object-fit:cover;
+  display:block;
 }
 
 .short-video .play{
@@ -515,8 +483,8 @@ a{
   left:50%;
   top:50%;
   transform:translate(-50%,-50%);
-  width:50px;
-  height:50px;
+  width:52px;
+  height:52px;
   background:#e31824;
   color:#fff;
   border-radius:50%;
@@ -524,12 +492,36 @@ a{
   align-items:center;
   justify-content:center;
   font-size:22px;
+  pointer-events:none;
 }
 
 .short-card h3{
   margin-top:10px;
   font-size:17px;
   line-height:1.4;
+}
+
+.short-loading{
+  width:100%;
+  text-align:center;
+  padding:30px 10px;
+  color:#666;
+}
+
+.short-error{
+  width:100%;
+  text-align:center;
+  padding:30px 10px;
+  color:#e31824;
+  background:#fff5f5;
+  border-radius:10px;
+}
+
+.short-empty{
+  width:100%;
+  text-align:center;
+  padding:30px 10px;
+  color:#666;
 }
 
 @media(max-width:800px){
@@ -1104,6 +1096,269 @@ async function loadTopNews(){
 
 }
 
+/* =========================
+   LOAD NEWS SHORTS
+========================= */
+
+async function loadShorts(){
+
+  const shortsContainer =
+    document.getElementById("homeShorts");
+
+
+  if(!shortsContainer){
+    console.error("homeShorts container नहीं मिला");
+    return;
+  }
+
+
+  /* Loading */
+
+  shortsContainer.innerHTML = `
+    <div class="short-loading">
+      🎬 Shorts लोड हो रहे हैं...
+    </div>
+  `;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } = await newsClient
+
+      .from("shorts")
+
+      .select("*")
+
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+    /* Supabase error */
+
+    if(error){
+
+      console.error(
+        "SHORTS ERROR:",
+        error
+      );
+
+      shortsContainer.innerHTML = `
+        <div class="short-error">
+          ❌ Shorts लोड नहीं हो सके।
+        </div>
+      `;
+
+      return;
+    }
+
+
+    /* No shorts */
+
+    if(!data || data.length === 0){
+
+      shortsContainer.innerHTML = `
+        <div class="short-empty">
+          🎬 अभी कोई News Short उपलब्ध नहीं है।
+        </div>
+      `;
+
+      return;
+    }
+
+
+    /* Clear */
+
+    shortsContainer.innerHTML = "";
+
+
+    /* Create Shorts */
+
+    data.forEach(short => {
+
+      /*
+        अलग-अलग possible column names
+        को support करने के लिए
+      */
+
+      const videoUrl =
+        short.video_url ||
+        short.video ||
+        short.videoUrl ||
+        short.url ||
+        "";
+
+
+      const title =
+        short.title ||
+        short.description ||
+        "NEWS SHORT";
+
+
+      const category =
+        short.category ||
+        "NEWS";
+
+
+      /* Empty video URL */
+
+      if(!videoUrl){
+
+        console.warn(
+          "Video URL नहीं मिला:",
+          short
+        );
+
+        return;
+      }
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "short-card";
+
+
+      card.innerHTML = `
+
+        <div class="short-video">
+
+          <video
+            src="${escapeHtml(videoUrl)}"
+            muted
+            playsinline
+            preload="metadata"
+            controls
+          ></video>
+
+          <div class="play">
+            ▶
+          </div>
+
+        </div>
+
+
+        <h3>
+          ${escapeHtml(title)}
+        </h3>
+
+
+        <div
+          class="tag"
+          style="margin-top:5px;"
+        >
+          ${escapeHtml(category)}
+        </div>
+
+      `;
+
+
+      shortsContainer.appendChild(card);
+
+
+      /* =========================
+         VIDEO PLAY
+      ========================= */
+
+      const video =
+        card.querySelector("video");
+
+
+      const playButton =
+        card.querySelector(".play");
+
+
+      video.addEventListener(
+        "play",
+        function(){
+
+          playButton.style.display =
+            "none";
+
+        }
+      );
+
+
+      video.addEventListener(
+        "pause",
+        function(){
+
+          playButton.style.display =
+            "flex";
+
+        }
+      );
+
+
+      video.addEventListener(
+        "click",
+        function(){
+
+          if(video.paused){
+
+            video.play();
+
+          }else{
+
+            video.pause();
+
+          }
+
+        }
+      );
+
+
+      playButton.addEventListener(
+        "click",
+        function(){
+
+          video.play();
+
+        }
+      );
+
+    });
+
+
+    /* Check if valid videos found */
+
+    if(
+      shortsContainer.children.length === 0
+    ){
+
+      shortsContainer.innerHTML = `
+        <div class="short-empty">
+          🎬 कोई valid video नहीं मिला।
+        </div>
+      `;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "SHORTS LOAD FAILED:",
+      error
+    );
+
+
+    shortsContainer.innerHTML = `
+      <div class="short-error">
+        ❌ Shorts लोड करते समय समस्या हुई।
+      </div>
+    `;
+
+  }
+
+}
 
 /* =========================
    LOAD ALL NEWS
@@ -1412,6 +1667,8 @@ loadTopNews();
 
 loadNews();
 
+loadShorts();
+  
 </script>
 
 </body>
