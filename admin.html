@@ -1197,7 +1197,7 @@ async function uploadShort(){
     error:saveError
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .insert({
 
       title:title,
@@ -1268,7 +1268,7 @@ async function loadShorts(){
     error
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .select("*")
     .order(
       "created_at",
@@ -1384,7 +1384,7 @@ async function editShort(id){
     error
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .select("*")
     .eq("id",id)
     .single();
@@ -1425,7 +1425,7 @@ async function editShort(id){
     error:updateError
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .update({
 
       title:newTitle.trim(),
@@ -1477,7 +1477,7 @@ async function deleteShort(id){
     error
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .select(
       "video_path,thumbnail_path"
     )
@@ -1554,7 +1554,7 @@ async function deleteShort(id){
     error:dbError
   } =
   await supabaseClient
-    .from("shorts")
+    .from("shorts-videos")
     .delete()
     .eq("id",id);
 
