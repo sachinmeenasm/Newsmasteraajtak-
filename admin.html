@@ -1031,7 +1031,7 @@ async function editNews(id){
 
 }
 
-/* =========================
+  /* =========================
    UPLOAD SHORT
 ========================= */
 
@@ -1117,7 +1117,7 @@ async function uploadShort(){
 
 
   /* =========================
-     VIDEO TYPE CHECK
+     FILE TYPE CHECK
   ========================= */
 
   if(!videoFile.type.startsWith("video/")){
@@ -1131,10 +1131,6 @@ async function uploadShort(){
   }
 
 
-  /* =========================
-     THUMBNAIL TYPE CHECK
-  ========================= */
-
   if(!thumbnailFile.type.startsWith("image/")){
 
     status.innerText =
@@ -1147,8 +1143,16 @@ async function uploadShort(){
 
 
   /* =========================
-     SAFE FILE NAMES
+     CREATE UNIQUE FILE NAMES
   ========================= */
+
+  const uniqueId =
+    Date.now() +
+    "-" +
+    Math.random()
+      .toString(36)
+      .substring(2,8);
+
 
   const videoExtension =
     videoFile.name
@@ -1156,18 +1160,12 @@ async function uploadShort(){
       .pop()
       .toLowerCase();
 
+
   const thumbnailExtension =
     thumbnailFile.name
       .split(".")
       .pop()
       .toLowerCase();
-
-
-  const uniqueId =
-    Date.now() + "-" +
-    Math.random()
-      .toString(36)
-      .substring(2,8);
 
 
   const videoPath =
@@ -1183,8 +1181,9 @@ async function uploadShort(){
 
 
   /* =========================
-     VIDEO UPLOAD
-     BUCKET = short videos
+     UPLOAD VIDEO
+     
+     BUCKET = short-videos
   ========================= */
 
   status.innerText =
@@ -1197,9 +1196,7 @@ async function uploadShort(){
     error: videoError
   } =
   await supabaseClient.storage
-
     .from("short-videos")
-
     .upload(
       videoPath,
       videoFile,
@@ -1236,9 +1233,7 @@ async function uploadShort(){
     data: videoData
   } =
   supabaseClient.storage
-
     .from("short-videos")
-
     .getPublicUrl(
       videoPath
     );
@@ -1249,8 +1244,9 @@ async function uploadShort(){
 
 
   /* =========================
-     THUMBNAIL UPLOAD
-     BUCKET = short thumbnails
+     UPLOAD THUMBNAIL
+     
+     BUCKET = short-thumbnails
   ========================= */
 
   status.innerText =
@@ -1261,9 +1257,7 @@ async function uploadShort(){
     error: thumbnailError
   } =
   await supabaseClient.storage
-
     .from("short-thumbnails")
-
     .upload(
       thumbnailPath,
       thumbnailFile,
@@ -1283,12 +1277,11 @@ async function uploadShort(){
     );
 
 
-    /* Video को भी हटाने की कोशिश */
+    /* Thumbnail fail होने पर
+       Video भी delete करें */
 
     await supabaseClient.storage
-
       .from("short-videos")
-
       .remove([
         videoPath
       ]);
@@ -1312,9 +1305,7 @@ async function uploadShort(){
     data: thumbnailData
   } =
   supabaseClient.storage
-
     .from("short-thumbnails")
-
     .getPublicUrl(
       thumbnailPath
     );
@@ -1326,6 +1317,7 @@ async function uploadShort(){
 
   /* =========================
      SAVE SHORT IN DATABASE
+     
      TABLE = shorts
   ========================= */
 
@@ -1337,18 +1329,20 @@ async function uploadShort(){
     error: saveError
   } =
   await supabaseClient
-
     .from("shorts")
-
     .insert({
 
       title: title,
+
+      category: category,
 
       video_url: videoUrl,
 
       thumbnail_url: thumbnailUrl,
 
-      is_published: true
+      video_path: videoPath,
+
+      thumbnail_path: thumbnailPath
 
     });
 
@@ -1365,21 +1359,18 @@ async function uploadShort(){
     );
 
 
-    /* Uploaded files delete करें */
+    /* Database save fail होने पर
+       uploaded files delete करें */
 
     await supabaseClient.storage
-
       .from("short-videos")
-
       .remove([
         videoPath
       ]);
 
 
     await supabaseClient.storage
-
       .from("short-thumbnails")
-
       .remove([
         thumbnailPath
       ]);
@@ -1406,7 +1397,7 @@ async function uploadShort(){
 
 
   /* =========================
-     FORM RESET
+     RESET FORM
   ========================= */
 
   document.getElementById(
@@ -1425,7 +1416,7 @@ async function uploadShort(){
 
 
   /* =========================
-     REFRESH SHORT LIST
+     REFRESH SHORTS
   ========================= */
 
   loadShorts();
@@ -1440,36 +1431,47 @@ async function uploadShort(){
 async function loadShorts(){
 
   const {
-    data:{ session }
-  } = await supabaseClient.auth.getSession();
+    data: { session }
+  } =
+  await supabaseClient.auth.getSession();
 
 
-  if(!session) return;
+  if(!session){
 
+    return;
+  }
+
+
+  /* =========================
+     DATABASE TABLE = shorts
+  ========================= */
 
   const {
     data,
     error
   } =
   await supabaseClient
-    .from("shorts-videos")
+    .from("shorts")
     .select("*")
     .order(
       "created_at",
       {
-        ascending:false
+        ascending: false
       }
     );
 
 
   const list =
-    document.getElementById("shortsList");
+    document.getElementById(
+      "shortsList"
+    );
 
 
   if(error){
 
     list.innerHTML =
-      "<p class='error'>❌ Shorts load failed: " +
+      "<p class='error'>" +
+      "❌ Shorts load failed: " +
       escapeHtml(error.message) +
       "</p>";
 
@@ -1477,7 +1479,7 @@ async function loadShorts(){
   }
 
 
-  if(!data || data.length===0){
+  if(!data || data.length === 0){
 
     list.innerHTML =
       "<p>अभी कोई Short upload नहीं है।</p>";
@@ -1486,10 +1488,10 @@ async function loadShorts(){
   }
 
 
-  list.innerHTML="";
+  list.innerHTML = "";
 
 
-  data.forEach(short=>{
+  data.forEach(short => {
 
     const div =
       document.createElement("div");
@@ -1509,15 +1511,17 @@ async function loadShorts(){
       ${
         short.thumbnail_url
         ?
-        `<img
+        `
+        <img
           src="${escapeHtml(short.thumbnail_url)}"
           style="
             width:100%;
-            max-height:180px;
+            max-height:220px;
             object-fit:cover;
             border-radius:8px;
           "
-        >`
+        >
+        `
         :
         ""
       }
@@ -1532,6 +1536,31 @@ async function loadShorts(){
         <b>Category:</b>
         ${escapeHtml(short.category)}
       </p>
+
+
+      ${
+        short.video_url
+        ?
+        `
+        <video
+          controls
+          style="
+            width:100%;
+            max-height:300px;
+            margin-top:10px;
+            border-radius:8px;
+          "
+        >
+          <source
+            src="${escapeHtml(short.video_url)}"
+            type="video/mp4"
+          >
+          आपका browser video support नहीं करता।
+        </video>
+        `
+        :
+        ""
+      }
 
 
       <button
@@ -1554,6 +1583,7 @@ async function loadShorts(){
     list.appendChild(div);
 
   });
+
 }
 
 
@@ -1568,9 +1598,12 @@ async function editShort(id){
     error
   } =
   await supabaseClient
-    .from("shorts-videos")
+    .from("shorts")
     .select("*")
-    .eq("id",id)
+    .eq(
+      "id",
+      id
+    )
     .single();
 
 
@@ -1585,6 +1618,10 @@ async function editShort(id){
   }
 
 
+  /* =========================
+     EDIT TITLE
+  ========================= */
+
   const newTitle =
     prompt(
       "Short का नया Title:",
@@ -1592,8 +1629,25 @@ async function editShort(id){
     );
 
 
-  if(newTitle===null) return;
+  if(newTitle === null){
 
+    return;
+  }
+
+
+  if(!newTitle.trim()){
+
+    alert(
+      "⚠️ Title खाली नहीं हो सकता।"
+    );
+
+    return;
+  }
+
+
+  /* =========================
+     EDIT CATEGORY
+  ========================= */
 
   const newCategory =
     prompt(
@@ -1602,22 +1656,44 @@ async function editShort(id){
     );
 
 
-  if(newCategory===null) return;
+  if(newCategory === null){
 
+    return;
+  }
+
+
+  if(!newCategory.trim()){
+
+    alert(
+      "⚠️ Category खाली नहीं हो सकती।"
+    );
+
+    return;
+  }
+
+
+  /* =========================
+     UPDATE DATABASE
+  ========================= */
 
   const {
-    error:updateError
+    error: updateError
   } =
   await supabaseClient
-    .from("shorts-videos")
+    .from("shorts")
     .update({
 
-      title:newTitle.trim(),
+      title:
+        newTitle.trim(),
 
-      category:newCategory.trim()
+      category:
+        newCategory.trim()
 
     })
-    .eq("id",id);
+    .eq(
+      "id",
+      id
+    );
 
 
   if(updateError){
@@ -1637,6 +1713,7 @@ async function editShort(id){
 
 
   loadShorts();
+
 }
 
 
@@ -1646,26 +1723,35 @@ async function editShort(id){
 
 async function deleteShort(id){
 
-  if(
-    !confirm(
+  const confirmDelete =
+    confirm(
       "क्या आप यह Short Delete करना चाहते हैं?"
-    )
-  ){
+    );
+
+
+  if(!confirmDelete){
 
     return;
   }
 
+
+  /* =========================
+     GET FILE PATHS
+  ========================= */
 
   const {
     data,
     error
   } =
   await supabaseClient
-    .from("shorts-videos")
+    .from("shorts")
     .select(
-      "video_path,thumbnail_path"
+      "video_path, thumbnail_path"
     )
-    .eq("id",id)
+    .eq(
+      "id",
+      id
+    )
     .single();
 
 
@@ -1680,12 +1766,16 @@ async function deleteShort(id){
   }
 
 
-  /* VIDEO DELETE */
+  /* =========================
+     DELETE VIDEO
+     
+     BUCKET = short-videos
+  ========================= */
 
   if(data.video_path){
 
     const {
-      error:videoError
+      error: videoError
     } =
     await supabaseClient.storage
       .from("short-videos")
@@ -1706,12 +1796,16 @@ async function deleteShort(id){
   }
 
 
-  /* THUMBNAIL DELETE */
+  /* =========================
+     DELETE THUMBNAIL
+     
+     BUCKET = short-thumbnails
+  ========================= */
 
   if(data.thumbnail_path){
 
     const {
-      error:thumbnailError
+      error: thumbnailError
     } =
     await supabaseClient.storage
       .from("short-thumbnails")
@@ -1732,15 +1826,22 @@ async function deleteShort(id){
   }
 
 
-  /* DATABASE DELETE */
+  /* =========================
+     DELETE DATABASE RECORD
+     
+     TABLE = shorts
+  ========================= */
 
   const {
-    error:dbError
+    error: dbError
   } =
   await supabaseClient
-    .from("shorts-videos")
+    .from("shorts")
     .delete()
-    .eq("id",id);
+    .eq(
+      "id",
+      id
+    );
 
 
   if(dbError){
@@ -1754,13 +1855,19 @@ async function deleteShort(id){
   }
 
 
+  /* =========================
+     SUCCESS
+  ========================= */
+
   alert(
     "✅ Short पूरी तरह Delete हो गया!"
   );
 
 
   loadShorts();
-      }
+
+}
+
 
 /* =========================
    ESCAPE HTML
@@ -1804,7 +1911,7 @@ function escapeHtml(text){
 
 checkLogin();
 
-  </script>
-              
+</script>
+
 </body>
 </html>
